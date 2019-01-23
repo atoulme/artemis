@@ -14,13 +14,18 @@
 package tech.pegasys.artemis.services.chainstorage;
 
 import com.google.common.eventbus.EventBus;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tech.pegasys.artemis.services.ServiceInterface;
 
+/** Service managing storage of beacon chain elements, such as blocks and state. */
 public class ChainStorageService implements ServiceInterface {
-  private EventBus eventBus;
   private static final Logger LOG = LogManager.getLogger();
+
+  private EventBus eventBus;
+  private BlockRepository blockRepository;
+  private final AtomicBoolean started = new AtomicBoolean(false);
 
   public ChainStorageService() {}
 
@@ -32,11 +37,23 @@ public class ChainStorageService implements ServiceInterface {
 
   @Override
   public void run() {
-    // TODO Do something.
+    if (started.compareAndSet(false, true)) {
+      this.blockRepository = new BlockRepository();
+    }
   }
 
   @Override
   public void stop() {
-    this.eventBus.unregister(this);
+    if (started.compareAndSet(true, false)) {
+      this.eventBus.unregister(this);
+    }
+  }
+
+  public BlockRepository getBlockRepository() {
+    if (started.get()) {
+      return blockRepository;
+    } else {
+      throw new IllegalStateException("Service was not started yet");
+    }
   }
 }
