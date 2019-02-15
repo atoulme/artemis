@@ -13,22 +13,22 @@
 
 package tech.pegasys.artemis.datastructures.operations;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.Objects;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.ssz.SSZ;
+import net.consensys.cava.units.bigints.UInt64;
 import tech.pegasys.artemis.datastructures.blocks.ProposalSignedData;
 
 public class ProposerSlashing {
 
-  private UnsignedLong proposer_index;
+  private UInt64 proposer_index;
   private ProposalSignedData proposal_data_1;
   private BLSSignature proposal_signature_1;
   private ProposalSignedData proposal_data_2;
   private BLSSignature proposal_signature_2;
 
   public ProposerSlashing(
-      UnsignedLong proposer_index,
+      UInt64 proposer_index,
       ProposalSignedData proposal_data_1,
       BLSSignature proposal_signature_1,
       ProposalSignedData proposal_data_2,
@@ -45,7 +45,7 @@ public class ProposerSlashing {
         bytes,
         reader ->
             new ProposerSlashing(
-                UnsignedLong.fromLongBits(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
                 ProposalSignedData.fromBytes(reader.readBytes()),
                 BLSSignature.fromBytes(reader.readBytes()),
                 ProposalSignedData.fromBytes(reader.readBytes()),
@@ -55,7 +55,7 @@ public class ProposerSlashing {
   public Bytes toBytes() {
     return SSZ.encode(
         writer -> {
-          writer.writeUInt64(proposer_index.longValue());
+          writer.writeUInt64(proposer_index.toLong());
           writer.writeBytes(proposal_data_1.toBytes());
           writer.writeBytes(proposal_signature_1.toBytes());
           writer.writeBytes(proposal_data_2.toBytes());
@@ -96,11 +96,11 @@ public class ProposerSlashing {
   }
 
   /** ******************* * GETTERS & SETTERS * * ******************* */
-  public UnsignedLong getProposer_index() {
+  public UInt64 getProposer_index() {
     return proposer_index;
   }
 
-  public void setProposer_index(UnsignedLong proposer_index) {
+  public void setProposer_index(UInt64 proposer_index) {
     this.proposer_index = proposer_index;
   }
 

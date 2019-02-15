@@ -15,12 +15,12 @@ package tech.pegasys.artemis.statetransition.util;
 
 import static java.lang.Math.toIntExact;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.List;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes32;
 import net.consensys.cava.bytes.Bytes48;
 import net.consensys.cava.crypto.Hash;
+import net.consensys.cava.units.bigints.UInt64;
 import tech.pegasys.artemis.datastructures.Constants;
 import tech.pegasys.artemis.datastructures.blocks.BeaconBlock;
 import tech.pegasys.artemis.datastructures.blocks.Eth1DataVote;
@@ -71,8 +71,8 @@ public class BlockProcessorUtil {
     // Let proposer = state.validator_registry[get_beacon_proposer_index(state, state.slot)].
     int proposerIndex = BeaconStateUtil.get_beacon_proposer_index(state, state.getSlot());
     Bytes48 pubkey = state.getValidator_registry().get(proposerIndex).getPubkey();
-    // TODO: convert these values to UnsignedLong
-    long epoch = BeaconStateUtil.get_current_epoch(state).longValue();
+    // TODO: convert these values to UInt64
+    long epoch = BeaconStateUtil.get_current_epoch(state).toLong();
     Bytes32 epochBytes = Bytes32.wrap(Bytes.minimalBytes(epoch));
     // Verify that bls_verify(pubkey=proposer.pubkey,
     // message=int_to_bytes32(get_current_epoch(state)), signature=block.randao_reveal, domain=
@@ -105,14 +105,14 @@ public class BlockProcessorUtil {
     List<Eth1DataVote> votes = state.getEth1_data_votes();
     for (Eth1DataVote vote : votes) {
       if (block.getEth1_data().equals(vote.getEth1_data())) {
-        UnsignedLong voteCount = vote.getVote_count().plus(UnsignedLong.ONE);
+        UInt64 voteCount = vote.getVote_count().add(UInt64.ONE);
         vote.setVote_count(voteCount);
         exists = true;
         break;
       }
     }
     if (!exists) {
-      votes.add(new Eth1DataVote(block.getEth1_data(), UnsignedLong.ONE));
+      votes.add(new Eth1DataVote(block.getEth1_data(), UInt64.ONE));
     }
   }
 }

@@ -15,9 +15,10 @@ package tech.pegasys.artemis.util.bitwise;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.Random;
+import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.junit.BouncyCastleExtension;
+import net.consensys.cava.units.bigints.UInt64;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -26,10 +27,10 @@ class BitwiseOpstTest {
 
   @Test
   void basicOr() {
-    UnsignedLong binary1 = UnsignedLong.ONE;
-    UnsignedLong binary10 = UnsignedLong.valueOf(2);
-    UnsignedLong binary11 = UnsignedLong.valueOf(3);
-    UnsignedLong result = BitwiseOps.or(binary1, binary10);
+    UInt64 binary1 = UInt64.ONE;
+    UInt64 binary10 = UInt64.valueOf(2);
+    UInt64 binary11 = UInt64.valueOf(3);
+    UInt64 result = BitwiseOps.or(binary1, binary10);
 
     assertThat(result).isEqualTo(binary11);
   }
@@ -41,9 +42,9 @@ class BitwiseOpstTest {
     int rand_int1;
     int rand_int2;
     int integer_bitwise_or;
-    UnsignedLong rand_unsigned1;
-    UnsignedLong rand_unsigned2;
-    UnsignedLong unsigned_bitwise_or;
+    UInt64 rand_unsigned1;
+    UInt64 rand_unsigned2;
+    UInt64 unsigned_bitwise_or;
 
     // Repeat random test SECURITY_THRESHOLD times
     int SECURITY_THRESHOLD = 100;
@@ -52,10 +53,10 @@ class BitwiseOpstTest {
       rand_int2 = rand.nextInt(Integer.MAX_VALUE);
       integer_bitwise_or = rand_int1 | rand_int2;
 
-      rand_unsigned1 = UnsignedLong.valueOf(rand_int1);
-      rand_unsigned2 = UnsignedLong.valueOf(rand_int2);
+      rand_unsigned1 = UInt64.valueOf(rand_int1);
+      rand_unsigned2 = UInt64.valueOf(rand_int2);
       unsigned_bitwise_or = BitwiseOps.or(rand_unsigned1, rand_unsigned2);
-      assertThat(UnsignedLong.valueOf(integer_bitwise_or)).isEqualTo(unsigned_bitwise_or);
+      assertThat(UInt64.valueOf(integer_bitwise_or)).isEqualTo(unsigned_bitwise_or);
     }
   }
 
@@ -64,10 +65,10 @@ class BitwiseOpstTest {
     // Define random variables
     Random rand = new Random();
     long rand_long;
-    UnsignedLong rand_unsigned;
+    UInt64 rand_unsigned;
 
     long long_bitwise_left;
-    UnsignedLong unsigned_bitwise_left;
+    UInt64 unsigned_bitwise_left;
 
     int shift_num;
 
@@ -76,16 +77,16 @@ class BitwiseOpstTest {
     for (int i = 0; i < SECURITY_THRESHOLD; i++) {
 
       rand_long = rand.nextLong();
-      if (rand_long < 0) rand_long *= rand_long;
-      rand_unsigned = UnsignedLong.fromLongBits(rand_long);
+      if (rand_long < 0) rand_long -= rand_long;
+      rand_unsigned = UInt64.valueOf(rand_long);
 
       shift_num = rand.nextInt(10);
 
       long_bitwise_left = rand_long << shift_num;
       unsigned_bitwise_left = BitwiseOps.leftShift(rand_unsigned, shift_num);
 
-      assertThat(Long.toString(long_bitwise_left, 2))
-          .isEqualTo(Long.toString(unsigned_bitwise_left.longValue(), 2));
+      assertThat(Bytes.ofUnsignedLong(long_bitwise_left).toHexString())
+          .isEqualTo(unsigned_bitwise_left.toHexString());
     }
   }
 
@@ -94,10 +95,10 @@ class BitwiseOpstTest {
     // Define random variables
     Random rand = new Random();
     long rand_long;
-    UnsignedLong rand_unsigned;
+    UInt64 rand_unsigned;
 
     long long_bitwise_right;
-    UnsignedLong unsigned_bitwise_right;
+    UInt64 unsigned_bitwise_right;
 
     int shift_num;
 
@@ -106,16 +107,16 @@ class BitwiseOpstTest {
     for (int i = 0; i < SECURITY_THRESHOLD; i++) {
 
       rand_long = rand.nextLong();
-      if (rand_long < 0) rand_long *= rand_long;
-      rand_unsigned = UnsignedLong.fromLongBits(rand_long);
+      if (rand_long < 0) rand_long -= rand_long;
+      rand_unsigned = UInt64.valueOf(rand_long);
 
       shift_num = rand.nextInt(10);
 
       long_bitwise_right = rand_long >> shift_num;
       unsigned_bitwise_right = BitwiseOps.rightShift(rand_unsigned, shift_num);
 
-      assertThat(Long.toString(long_bitwise_right, 2))
-          .isEqualTo(Long.toString(unsigned_bitwise_right.longValue(), 2));
+      assertThat(Bytes.ofUnsignedLong(long_bitwise_right).toHexString())
+          .isEqualTo(unsigned_bitwise_right.toHexString());
     }
   }
 }

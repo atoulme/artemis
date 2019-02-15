@@ -13,13 +13,13 @@
 
 package tech.pegasys.artemis.statetransition;
 
-import com.google.common.primitives.UnsignedLong;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import net.consensys.cava.bytes.Bytes32;
 import net.consensys.cava.bytes.Bytes48;
+import net.consensys.cava.units.bigints.UInt64;
 import tech.pegasys.artemis.datastructures.blocks.Eth1Data;
 import tech.pegasys.artemis.datastructures.blocks.Eth1DataVote;
 import tech.pegasys.artemis.datastructures.state.Crosslink;
@@ -29,36 +29,35 @@ import tech.pegasys.artemis.datastructures.state.Validator;
 
 public class BeaconState {
   // Misc
-  private UnsignedLong slot;
-  private UnsignedLong genesis_time;
+  private UInt64 slot;
+  private UInt64 genesis_time;
   private Fork fork; // For versioning hard forks
 
   // Validator registry
   private List<Validator> validator_registry;
-  private List<UnsignedLong> validator_balances;
-  private UnsignedLong validator_registry_update_epoch;
+  private List<UInt64> validator_balances;
+  private UInt64 validator_registry_update_epoch;
 
   // Randomness and committees
   private List<Bytes32> latest_randao_mixes;
-  private UnsignedLong previous_epoch_start_shard;
-  private UnsignedLong current_epoch_start_shard;
-  private UnsignedLong previous_calculation_epoch;
-  private UnsignedLong current_calculation_epoch;
+  private UInt64 previous_epoch_start_shard;
+  private UInt64 current_epoch_start_shard;
+  private UInt64 previous_calculation_epoch;
+  private UInt64 current_calculation_epoch;
 
   // Finality
   private Bytes32 previous_epoch_seed;
   private Bytes32 current_epoch_seed;
-  private UnsignedLong previous_justified_epoch;
-  private UnsignedLong justified_epoch;
-  private UnsignedLong justification_bitfield;
-  private UnsignedLong finalized_epoch;
+  private UInt64 previous_justified_epoch;
+  private UInt64 justified_epoch;
+  private UInt64 justification_bitfield;
+  private UInt64 finalized_epoch;
 
   // Recent state
   private List<Crosslink> latest_crosslinks;
   private List<Bytes32> latest_block_roots;
   private List<Bytes32> latest_index_roots;
-  private List<UnsignedLong>
-      latest_penalized_balances; // Balances penalized at every withdrawal period
+  private List<UInt64> latest_penalized_balances; // Balances penalized at every withdrawal period
   private List<PendingAttestation> latest_attestations;
   private List<Bytes32> batched_block_roots;
 
@@ -79,36 +78,35 @@ public class BeaconState {
 
   public BeaconState(
       // Misc
-      UnsignedLong slot,
-      UnsignedLong genesis_time,
+      UInt64 slot,
+      UInt64 genesis_time,
       Fork fork, // For versioning hard forks
 
       // Validator registry
       ArrayList<Validator> validator_registry,
-      ArrayList<UnsignedLong> validator_balances,
-      UnsignedLong validator_registry_update_epoch,
+      ArrayList<UInt64> validator_balances,
+      UInt64 validator_registry_update_epoch,
 
       // Randomness and committees
       ArrayList<Bytes32> latest_randao_mixes,
-      UnsignedLong previous_epoch_start_shard,
-      UnsignedLong current_epoch_start_shard,
-      UnsignedLong previous_calculation_epoch,
-      UnsignedLong current_calculation_epoch,
+      UInt64 previous_epoch_start_shard,
+      UInt64 current_epoch_start_shard,
+      UInt64 previous_calculation_epoch,
+      UInt64 current_calculation_epoch,
       Bytes32 previous_epoch_seed,
       Bytes32 current_epoch_seed,
 
       // Finality
-      UnsignedLong previous_justified_epoch,
-      UnsignedLong justified_epoch,
-      UnsignedLong justification_bitfield,
-      UnsignedLong finalized_epoch,
+      UInt64 previous_justified_epoch,
+      UInt64 justified_epoch,
+      UInt64 justification_bitfield,
+      UInt64 finalized_epoch,
 
       // Recent state
       ArrayList<Crosslink> latest_crosslinks,
       ArrayList<Bytes32> latest_block_roots,
       ArrayList<Bytes32> latest_index_roots,
-      ArrayList<UnsignedLong>
-          latest_penalized_balances, // Balances penalized at every withdrawal period
+      ArrayList<UInt64> latest_penalized_balances, // Balances penalized at every withdrawal period
       ArrayList<PendingAttestation> latest_attestations,
       ArrayList<Bytes32> batched_block_roots,
 
@@ -148,19 +146,19 @@ public class BeaconState {
   }
 
   /** ******************* * GETTERS & SETTERS * * ******************* */
-  public UnsignedLong getSlot() {
+  public UInt64 getSlot() {
     return slot;
   }
 
-  public void setSlot(UnsignedLong slot) {
+  public void setSlot(UInt64 slot) {
     this.slot = slot;
   }
 
-  public UnsignedLong getGenesis_time() {
+  public UInt64 getGenesis_time() {
     return genesis_time;
   }
 
-  public void setGenesis_time(UnsignedLong genesis_time) {
+  public void setGenesis_time(UInt64 genesis_time) {
     this.genesis_time = genesis_time;
   }
 
@@ -180,19 +178,19 @@ public class BeaconState {
     this.validator_registry = validator_registry;
   }
 
-  public List<UnsignedLong> getValidator_balances() {
+  public List<UInt64> getValidator_balances() {
     return validator_balances;
   }
 
-  public void setValidator_balances(List<UnsignedLong> validator_balances) {
+  public void setValidator_balances(List<UInt64> validator_balances) {
     this.validator_balances = validator_balances;
   }
 
-  public UnsignedLong getValidator_registry_update_epoch() {
+  public UInt64 getValidator_registry_update_epoch() {
     return validator_registry_update_epoch;
   }
 
-  public void setValidator_registry_update_epoch(UnsignedLong validator_registry_update_epoch) {
+  public void setValidator_registry_update_epoch(UInt64 validator_registry_update_epoch) {
     this.validator_registry_update_epoch = validator_registry_update_epoch;
   }
 
@@ -204,35 +202,35 @@ public class BeaconState {
     this.latest_randao_mixes = latest_randao_mixes;
   }
 
-  public UnsignedLong getPrevious_epoch_start_shard() {
+  public UInt64 getPrevious_epoch_start_shard() {
     return previous_epoch_start_shard;
   }
 
-  public void setPrevious_epoch_start_shard(UnsignedLong previous_epoch_start_shard) {
+  public void setPrevious_epoch_start_shard(UInt64 previous_epoch_start_shard) {
     this.previous_epoch_start_shard = previous_epoch_start_shard;
   }
 
-  public UnsignedLong getCurrent_epoch_start_shard() {
+  public UInt64 getCurrent_epoch_start_shard() {
     return current_epoch_start_shard;
   }
 
-  public void setCurrent_epoch_start_shard(UnsignedLong current_epoch_start_shard) {
+  public void setCurrent_epoch_start_shard(UInt64 current_epoch_start_shard) {
     this.current_epoch_start_shard = current_epoch_start_shard;
   }
 
-  public UnsignedLong getPrevious_calculation_epoch() {
+  public UInt64 getPrevious_calculation_epoch() {
     return previous_calculation_epoch;
   }
 
-  public void setPrevious_calculation_epoch(UnsignedLong previous_calculation_epoch) {
+  public void setPrevious_calculation_epoch(UInt64 previous_calculation_epoch) {
     this.previous_calculation_epoch = previous_calculation_epoch;
   }
 
-  public UnsignedLong getCurrent_calculation_epoch() {
+  public UInt64 getCurrent_calculation_epoch() {
     return current_calculation_epoch;
   }
 
-  public void setCurrent_calculation_epoch(UnsignedLong current_calculation_epoch) {
+  public void setCurrent_calculation_epoch(UInt64 current_calculation_epoch) {
     this.current_calculation_epoch = current_calculation_epoch;
   }
 
@@ -252,35 +250,35 @@ public class BeaconState {
     this.current_epoch_seed = current_epoch_seed;
   }
 
-  public UnsignedLong getPrevious_justified_epoch() {
+  public UInt64 getPrevious_justified_epoch() {
     return previous_justified_epoch;
   }
 
-  public void setPrevious_justified_epoch(UnsignedLong previous_justified_epoch) {
+  public void setPrevious_justified_epoch(UInt64 previous_justified_epoch) {
     this.previous_justified_epoch = previous_justified_epoch;
   }
 
-  public UnsignedLong getJustified_epoch() {
+  public UInt64 getJustified_epoch() {
     return justified_epoch;
   }
 
-  public void setJustified_epoch(UnsignedLong justified_epoch) {
+  public void setJustified_epoch(UInt64 justified_epoch) {
     this.justified_epoch = justified_epoch;
   }
 
-  public UnsignedLong getJustification_bitfield() {
+  public UInt64 getJustification_bitfield() {
     return justification_bitfield;
   }
 
-  public void setJustification_bitfield(UnsignedLong justification_bitfield) {
+  public void setJustification_bitfield(UInt64 justification_bitfield) {
     this.justification_bitfield = justification_bitfield;
   }
 
-  public UnsignedLong getFinalized_epoch() {
+  public UInt64 getFinalized_epoch() {
     return finalized_epoch;
   }
 
-  public void setFinalized_epoch(UnsignedLong finalized_epoch) {
+  public void setFinalized_epoch(UInt64 finalized_epoch) {
     this.finalized_epoch = finalized_epoch;
   }
 
@@ -308,11 +306,11 @@ public class BeaconState {
     this.latest_index_roots = latest_index_roots;
   }
 
-  public List<UnsignedLong> getLatest_penalized_balances() {
+  public List<UInt64> getLatest_penalized_balances() {
     return latest_penalized_balances;
   }
 
-  public void setLatest_penalized_balances(List<UnsignedLong> latest_penalized_balances) {
+  public void setLatest_penalized_balances(List<UInt64> latest_penalized_balances) {
     this.latest_penalized_balances = latest_penalized_balances;
   }
 
@@ -349,6 +347,6 @@ public class BeaconState {
   }
 
   public void incrementSlot() {
-    this.slot = slot.plus(UnsignedLong.ONE);
+    this.slot = slot.add(UInt64.ONE);
   }
 }

@@ -16,17 +16,17 @@ package tech.pegasys.artemis.datastructures.blocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomEth1Data;
-import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUnsignedLong;
+import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUInt64;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.Objects;
 import net.consensys.cava.bytes.Bytes;
+import net.consensys.cava.units.bigints.UInt64;
 import org.junit.jupiter.api.Test;
 
 class Eth1DataVoteTest {
 
   private Eth1Data eth1Data = randomEth1Data();
-  private UnsignedLong voteCount = randomUnsignedLong();
+  private UInt64 voteCount = randomUInt64();
 
   private Eth1DataVote eth1DataVote = new Eth1DataVote(eth1Data, voteCount);
 
@@ -59,8 +59,7 @@ class Eth1DataVoteTest {
 
   @Test
   void equalsReturnsFalseWhenVoteCountsAreDifferent() {
-    Eth1DataVote testEth1DataVote =
-        new Eth1DataVote(eth1Data, voteCount.plus(randomUnsignedLong()));
+    Eth1DataVote testEth1DataVote = new Eth1DataVote(eth1Data, voteCount.add(randomUInt64()));
 
     assertNotEquals(eth1DataVote, testEth1DataVote);
   }

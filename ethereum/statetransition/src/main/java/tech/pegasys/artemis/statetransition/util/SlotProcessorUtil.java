@@ -17,9 +17,9 @@ import static java.lang.Math.toIntExact;
 import static tech.pegasys.artemis.datastructures.Constants.LATEST_BLOCK_ROOTS_LENGTH;
 import static tech.pegasys.artemis.datastructures.Constants.LATEST_RANDAO_MIXES_LENGTH;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.List;
 import net.consensys.cava.bytes.Bytes32;
+import net.consensys.cava.units.bigints.UInt64;
 import tech.pegasys.artemis.datastructures.Constants;
 import tech.pegasys.artemis.datastructures.blocks.BeaconBlock;
 import tech.pegasys.artemis.statetransition.BeaconState;
@@ -27,7 +27,7 @@ import tech.pegasys.artemis.statetransition.StateTransitionException;
 
 public class SlotProcessorUtil {
   public static void updateLatestRandaoMixes(BeaconState state) {
-    // TODO: change values to UnsignedLong
+    // TODO: change values to UInt64
     int currSlot = state.getSlot().intValue();
     List<Bytes32> latestRandaoMixes = state.getLatest_randao_mixes();
     int index = (currSlot - 1) % LATEST_RANDAO_MIXES_LENGTH;
@@ -37,9 +37,9 @@ public class SlotProcessorUtil {
 
   public static void updateRecentBlockHashes(BeaconState state, BeaconBlock block)
       throws Exception {
-    // TODO: change values to UnsignedLong
+    // TODO: change values to UInt64
     Bytes32 previous_block_root =
-        BeaconStateUtil.get_block_root(state, state.getSlot().minus(UnsignedLong.ONE));
+        BeaconStateUtil.get_block_root(state, state.getSlot().subtract(UInt64.ONE));
     if (previous_block_root != null) {
       List<Bytes32> latest_block_roots = state.getLatest_block_roots();
 
@@ -52,7 +52,7 @@ public class SlotProcessorUtil {
           "StateTransitionException: BeaconState cannot be updated due to "
               + "previous_block_root returning a null");
     }
-    // TODO: change values to UnsignedLong
+    // TODO: change values to UInt64
     if (state.getSlot().intValue() % LATEST_BLOCK_ROOTS_LENGTH == 0) {
       List<Bytes32> batched_block_roots = state.getBatched_block_roots();
       List<Bytes32> latest_block_roots = state.getLatest_block_roots();

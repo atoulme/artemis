@@ -13,8 +13,8 @@
 
 package tech.pegasys.artemis.statetransition.util;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.List;
+import net.consensys.cava.units.bigints.UInt64;
 import tech.pegasys.artemis.datastructures.state.Validator;
 import tech.pegasys.artemis.statetransition.BeaconState;
 
@@ -37,8 +37,7 @@ public class CrosslinkCommitteeUtil {
   public static int get_next_epoch_committee_count(BeaconState state) {
     List<Validator> previous_active_validators =
         ValidatorsUtil.get_active_validators(
-            state.getValidator_registry(),
-            state.getCurrent_calculation_epoch().plus(UnsignedLong.ONE));
+            state.getValidator_registry(), state.getCurrent_calculation_epoch().add(UInt64.ONE));
     return previous_active_validators.size();
   }
 }

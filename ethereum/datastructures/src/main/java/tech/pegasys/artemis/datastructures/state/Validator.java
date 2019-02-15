@@ -13,12 +13,12 @@
 
 package tech.pegasys.artemis.datastructures.state;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.Objects;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes32;
 import net.consensys.cava.bytes.Bytes48;
 import net.consensys.cava.ssz.SSZ;
+import net.consensys.cava.units.bigints.UInt64;
 
 public class Validator {
 
@@ -27,24 +27,24 @@ public class Validator {
   // Withdrawal credentials
   private Bytes32 withdrawal_credentials;
   // Epoch when validator activated
-  private UnsignedLong activation_epoch;
+  private UInt64 activation_epoch;
   // Epoch when validator exited
-  private UnsignedLong exit_epoch;
+  private UInt64 exit_epoch;
   // Epoch when validator withdrew
-  private UnsignedLong withdrawal_epoch;
+  private UInt64 withdrawal_epoch;
   // Epoch when validator was penalized
-  private UnsignedLong penalized_epoch;
+  private UInt64 penalized_epoch;
   // Status flags
-  private UnsignedLong status_flags;
+  private UInt64 status_flags;
 
   public Validator(
       Bytes48 pubkey,
       Bytes32 withdrawal_credentials,
-      UnsignedLong activation_epoch,
-      UnsignedLong exit_epoch,
-      UnsignedLong withdrawal_epoch,
-      UnsignedLong penalized_epoch,
-      UnsignedLong status_flags) {
+      UInt64 activation_epoch,
+      UInt64 exit_epoch,
+      UInt64 withdrawal_epoch,
+      UInt64 penalized_epoch,
+      UInt64 status_flags) {
     this.pubkey = pubkey;
     this.withdrawal_credentials = withdrawal_credentials;
     this.activation_epoch = activation_epoch;
@@ -61,11 +61,11 @@ public class Validator {
             new Validator(
                 Bytes48.wrap(reader.readBytes()),
                 Bytes32.wrap(reader.readBytes()),
-                UnsignedLong.fromLongBits(reader.readUInt64()),
-                UnsignedLong.fromLongBits(reader.readUInt64()),
-                UnsignedLong.fromLongBits(reader.readUInt64()),
-                UnsignedLong.fromLongBits(reader.readUInt64()),
-                UnsignedLong.fromLongBits(reader.readUInt64())));
+                UInt64.valueOf(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64())));
   }
 
   public Bytes toBytes() {
@@ -73,11 +73,11 @@ public class Validator {
         writer -> {
           writer.writeBytes(pubkey);
           writer.writeBytes(withdrawal_credentials);
-          writer.writeUInt64(activation_epoch.longValue());
-          writer.writeUInt64(exit_epoch.longValue());
-          writer.writeUInt64(withdrawal_epoch.longValue());
-          writer.writeUInt64(penalized_epoch.longValue());
-          writer.writeUInt64(status_flags.longValue());
+          writer.writeUInt64(activation_epoch.toLong());
+          writer.writeUInt64(exit_epoch.toLong());
+          writer.writeUInt64(withdrawal_epoch.toLong());
+          writer.writeUInt64(penalized_epoch.toLong());
+          writer.writeUInt64(status_flags.toLong());
         });
   }
 
@@ -133,47 +133,47 @@ public class Validator {
     this.withdrawal_credentials = withdrawal_credentials;
   }
 
-  public UnsignedLong getActivation_epoch() {
+  public UInt64 getActivation_epoch() {
     return activation_epoch;
   }
 
-  public void setActivation_epoch(UnsignedLong activation_epoch) {
+  public void setActivation_epoch(UInt64 activation_epoch) {
     this.activation_epoch = activation_epoch;
   }
 
-  public UnsignedLong getExit_epoch() {
+  public UInt64 getExit_epoch() {
     return exit_epoch;
   }
 
-  public void setExit_epoch(UnsignedLong exit_epoch) {
+  public void setExit_epoch(UInt64 exit_epoch) {
     this.exit_epoch = exit_epoch;
   }
 
-  public UnsignedLong getWithdrawal_epoch() {
+  public UInt64 getWithdrawal_epoch() {
     return withdrawal_epoch;
   }
 
-  public void setWithdrawal_epoch(UnsignedLong withdrawal_epoch) {
+  public void setWithdrawal_epoch(UInt64 withdrawal_epoch) {
     this.withdrawal_epoch = withdrawal_epoch;
   }
 
-  public UnsignedLong getPenalized_epoch() {
+  public UInt64 getPenalized_epoch() {
     return penalized_epoch;
   }
 
-  public void setPenalized_epoch(UnsignedLong penalized_epoch) {
+  public void setPenalized_epoch(UInt64 penalized_epoch) {
     this.penalized_epoch = penalized_epoch;
   }
 
-  public UnsignedLong getStatus_flags() {
+  public UInt64 getStatus_flags() {
     return status_flags;
   }
 
-  public void setStatus_flags(UnsignedLong status_flags) {
+  public void setStatus_flags(UInt64 status_flags) {
     this.status_flags = status_flags;
   }
 
-  public boolean is_active_validator(UnsignedLong epoch) {
+  public boolean is_active_validator(UInt64 epoch) {
     // checks validator status against the validator status constants for whether the validator is
     // active
     return activation_epoch.compareTo(epoch) <= 0 && epoch.compareTo(exit_epoch) < 0;

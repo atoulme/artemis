@@ -13,14 +13,14 @@
 
 package tech.pegasys.artemis.util.bls;
 
-import com.google.common.primitives.UnsignedLong;
 import net.consensys.cava.bytes.Bytes32;
 import net.consensys.cava.bytes.Bytes48;
+import net.consensys.cava.units.bigints.UInt64;
 
 public class BLSVerify {
 
   public static boolean bls_verify(
-      Bytes48 pubkey, Bytes32 message, Signature signature, UnsignedLong domain) {
+      Bytes48 pubkey, Bytes32 message, Signature signature, UInt64 domain) {
     return true;
   }
 }

@@ -15,17 +15,17 @@ package tech.pegasys.artemis.datastructures.blocks;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUnsignedLong;
+import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUInt64;
 
-import com.google.common.primitives.UnsignedLong;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes32;
+import net.consensys.cava.units.bigints.UInt64;
 import org.junit.jupiter.api.Test;
 
 class ProposalSignedDataTest {
 
-  private UnsignedLong slot = randomUnsignedLong();
-  private UnsignedLong shard = randomUnsignedLong();
+  private UInt64 slot = randomUInt64();
+  private UInt64 shard = randomUInt64();
   private Bytes32 blockRoot = Bytes32.random();
 
   private ProposalSignedData proposalSignedData = new ProposalSignedData(slot, shard, blockRoot);
@@ -47,7 +47,7 @@ class ProposalSignedDataTest {
   @Test
   void equalsReturnsFalseWhenSlotsAreDifferent() {
     ProposalSignedData testProposalSignedData =
-        new ProposalSignedData(slot.plus(randomUnsignedLong()), shard, blockRoot);
+        new ProposalSignedData(slot.add(randomUInt64()), shard, blockRoot);
 
     assertNotEquals(proposalSignedData, testProposalSignedData);
   }
@@ -55,7 +55,7 @@ class ProposalSignedDataTest {
   @Test
   void equalsReturnsFalseWhenShardsAreDifferent() {
     ProposalSignedData testProposalSignedData =
-        new ProposalSignedData(slot, shard.plus(randomUnsignedLong()), blockRoot);
+        new ProposalSignedData(slot, shard.add(randomUInt64()), blockRoot);
 
     assertNotEquals(proposalSignedData, testProposalSignedData);
   }

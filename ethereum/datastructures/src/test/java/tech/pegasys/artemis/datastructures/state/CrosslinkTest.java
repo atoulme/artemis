@@ -15,16 +15,16 @@ package tech.pegasys.artemis.datastructures.state;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUnsignedLong;
+import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUInt64;
 
-import com.google.common.primitives.UnsignedLong;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes32;
+import net.consensys.cava.units.bigints.UInt64;
 import org.junit.jupiter.api.Test;
 
 class CrosslinkTest {
 
-  UnsignedLong epoch = randomUnsignedLong();
+  UInt64 epoch = randomUInt64();
   Bytes32 shardBlockRoot = Bytes32.random();
 
   private Crosslink crosslink = new Crosslink(epoch, shardBlockRoot);
@@ -45,7 +45,7 @@ class CrosslinkTest {
 
   @Test
   void equalsReturnsFalseWhenEpochsAreDifferent() {
-    Crosslink testCrosslink = new Crosslink(epoch.plus(randomUnsignedLong()), shardBlockRoot);
+    Crosslink testCrosslink = new Crosslink(epoch.add(randomUInt64()), shardBlockRoot);
 
     assertNotEquals(crosslink, testCrosslink);
   }

@@ -15,17 +15,17 @@ package tech.pegasys.artemis.datastructures.state;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUnsignedLong;
+import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUInt64;
 
-import com.google.common.primitives.UnsignedLong;
 import net.consensys.cava.bytes.Bytes;
+import net.consensys.cava.units.bigints.UInt64;
 import org.junit.jupiter.api.Test;
 
 class ForkTest {
 
-  private UnsignedLong previousVersion = randomUnsignedLong();
-  private UnsignedLong currentVersion = randomUnsignedLong();
-  private UnsignedLong epoch = randomUnsignedLong();
+  private UInt64 previousVersion = randomUInt64();
+  private UInt64 currentVersion = randomUInt64();
+  private UInt64 epoch = randomUInt64();
 
   private Fork fork = new Fork(previousVersion, currentVersion, epoch);
 
@@ -45,21 +45,21 @@ class ForkTest {
 
   @Test
   void equalsReturnsFalseWhenPreviousVersionsAreDifferent() {
-    Fork testFork = new Fork(previousVersion.plus(randomUnsignedLong()), currentVersion, epoch);
+    Fork testFork = new Fork(previousVersion.add(randomUInt64()), currentVersion, epoch);
 
     assertNotEquals(fork, testFork);
   }
 
   @Test
   void equalsReturnsFalseWhenCurrentVersionsAreDifferent() {
-    Fork testFork = new Fork(previousVersion, currentVersion.plus(randomUnsignedLong()), epoch);
+    Fork testFork = new Fork(previousVersion, currentVersion.add(randomUInt64()), epoch);
 
     assertNotEquals(fork, testFork);
   }
 
   @Test
   void equalsReturnsFalseWhenEpochsAreDifferent() {
-    Fork testFork = new Fork(previousVersion, currentVersion, epoch.plus(randomUnsignedLong()));
+    Fork testFork = new Fork(previousVersion, currentVersion, epoch.add(randomUInt64()));
 
     assertNotEquals(fork, testFork);
   }

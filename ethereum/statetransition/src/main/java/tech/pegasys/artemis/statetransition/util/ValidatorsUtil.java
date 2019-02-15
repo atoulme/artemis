@@ -13,10 +13,10 @@
 
 package tech.pegasys.artemis.statetransition.util;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
+import net.consensys.cava.units.bigints.UInt64;
 import tech.pegasys.artemis.datastructures.state.Validator;
 import tech.pegasys.artemis.statetransition.BeaconState;
 
@@ -29,8 +29,7 @@ public class ValidatorsUtil {
    * @param epoch
    * @return
    */
-  public static List<Validator> get_active_validators(
-      List<Validator> validators, UnsignedLong epoch) {
+  public static List<Validator> get_active_validators(List<Validator> validators, UInt64 epoch) {
     List<Validator> active_validators = new ArrayList<>();
     if (validators != null) {
       for (Validator record : validators) {
@@ -48,7 +47,7 @@ public class ValidatorsUtil {
    * @return
    */
   public static List<Integer> get_active_validator_indices(
-      List<Validator> validators, UnsignedLong epoch) {
+      List<Validator> validators, UInt64 epoch) {
     List<Integer> active_validator_indices = new ArrayList<>();
     IntStream.range(0, validators.size())
         .forEachOrdered(
@@ -69,8 +68,7 @@ public class ValidatorsUtil {
    * @param epoch
    * @return
    */
-  public static Boolean is_active_validator_index(
-      BeaconState state, int index, UnsignedLong epoch) {
+  public static Boolean is_active_validator_index(BeaconState state, int index, UInt64 epoch) {
     List<Validator> all_validators = state.getValidator_registry();
     return all_validators.get(index).is_active_validator(epoch);
   }

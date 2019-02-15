@@ -13,10 +13,10 @@
 
 package tech.pegasys.artemis.datastructures;
 
-import com.google.common.primitives.UnsignedLong;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes32;
 import net.consensys.cava.bytes.Bytes48;
+import net.consensys.cava.units.bigints.UInt64;
 import tech.pegasys.artemis.datastructures.operations.BLSSignature;
 
 public final class Constants {
@@ -27,7 +27,7 @@ public final class Constants {
   public static final int TARGET_COMMITTEE_SIZE = 128; // 2^7 validators
   public static final long EJECTION_BALANCE = 16000000000L; // 2^4 * 1e9 Gwei
   public static final int MAX_BALANCE_CHURN_QUOTIENT = 32; //
-  public static final UnsignedLong BEACON_CHAIN_SHARD_NUMBER = UnsignedLong.MAX_VALUE; // 2^64 - 1
+  public static final UInt64 BEACON_CHAIN_SHARD_NUMBER = UInt64.MAX_VALUE; // 2^64 - 1
   public static final int MAX_INDICES_PER_SLASHABLE_VOTE = 4096; // 2^12 votes
   public static final int MAX_WITHDRAWALS_PER_EPOCH = 4; // withdrawals
 
@@ -42,7 +42,7 @@ public final class Constants {
   public static final long GENESIS_SLOT = 524288l; // 2^19
   public static final long GENESIS_EPOCH = slot_to_epoch(GENESIS_SLOT);
   public static final long GENESIS_START_SHARD = 0;
-  public static UnsignedLong FAR_FUTURE_EPOCH = UnsignedLong.MAX_VALUE; //
+  public static UInt64 FAR_FUTURE_EPOCH = UInt64.MAX_VALUE; //
   public static Bytes32 ZERO_HASH = Bytes32.ZERO; //
   public static final BLSSignature EMPTY_SIGNATURE =
       new BLSSignature(Bytes48.ZERO, Bytes48.ZERO); // Bytes96

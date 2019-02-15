@@ -13,31 +13,31 @@
 
 package tech.pegasys.artemis.datastructures.operations;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.Objects;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes32;
 import net.consensys.cava.ssz.SSZ;
+import net.consensys.cava.units.bigints.UInt64;
 
 public class AttestationData {
 
-  private UnsignedLong slot;
-  private UnsignedLong shard;
+  private UInt64 slot;
+  private UInt64 shard;
   private Bytes32 beacon_block_root;
   private Bytes32 epoch_boundary_root;
   private Bytes32 shard_block_root;
   private Bytes32 latest_crosslink_root;
-  private UnsignedLong justified_epoch;
+  private UInt64 justified_epoch;
   private Bytes32 justified_block_root;
 
   public AttestationData(
-      UnsignedLong slot,
-      UnsignedLong shard,
+      UInt64 slot,
+      UInt64 shard,
       Bytes32 beacon_block_root,
       Bytes32 epoch_boundary_root,
       Bytes32 shard_block_root,
       Bytes32 latest_crosslink_root,
-      UnsignedLong justified_epoch,
+      UInt64 justified_epoch,
       Bytes32 justified_block_root) {
     this.slot = slot;
     this.shard = shard;
@@ -54,26 +54,26 @@ public class AttestationData {
         bytes,
         reader ->
             new AttestationData(
-                UnsignedLong.fromLongBits(reader.readUInt64()),
-                UnsignedLong.fromLongBits(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
                 Bytes32.wrap(reader.readBytes()),
                 Bytes32.wrap(reader.readBytes()),
                 Bytes32.wrap(reader.readBytes()),
                 Bytes32.wrap(reader.readBytes()),
-                UnsignedLong.fromLongBits(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
                 Bytes32.wrap(reader.readBytes())));
   }
 
   public Bytes toBytes() {
     return SSZ.encode(
         writer -> {
-          writer.writeUInt64(slot.longValue());
-          writer.writeUInt64(shard.longValue());
+          writer.writeUInt64(slot.toLong());
+          writer.writeUInt64(shard.toLong());
           writer.writeBytes(beacon_block_root);
           writer.writeBytes(epoch_boundary_root);
           writer.writeBytes(shard_block_root);
           writer.writeBytes(latest_crosslink_root);
-          writer.writeUInt64(justified_epoch.longValue());
+          writer.writeUInt64(justified_epoch.toLong());
           writer.writeBytes(justified_block_root);
         });
   }
@@ -117,11 +117,11 @@ public class AttestationData {
   }
 
   /** ******************* * GETTERS & SETTERS * * ******************* */
-  public UnsignedLong getSlot() {
+  public UInt64 getSlot() {
     return slot;
   }
 
-  public void setSlot(UnsignedLong slot) {
+  public void setSlot(UInt64 slot) {
     this.slot = slot;
   }
 
@@ -149,11 +149,11 @@ public class AttestationData {
     this.shard_block_root = shard_block_root;
   }
 
-  public UnsignedLong getShard() {
+  public UInt64 getShard() {
     return shard;
   }
 
-  public void setShard(UnsignedLong shard) {
+  public void setShard(UInt64 shard) {
     this.shard = shard;
   }
 
@@ -165,11 +165,11 @@ public class AttestationData {
     this.latest_crosslink_root = latest_crosslink_root;
   }
 
-  public UnsignedLong getJustified_epoch() {
+  public UInt64 getJustified_epoch() {
     return justified_epoch;
   }
 
-  public void setJustified_epoch(UnsignedLong justified_epoch) {
+  public void setJustified_epoch(UInt64 justified_epoch) {
     this.justified_epoch = justified_epoch;
   }
 

@@ -13,23 +13,23 @@
 
 package tech.pegasys.artemis.datastructures.operations;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes32;
 import net.consensys.cava.ssz.SSZ;
+import net.consensys.cava.units.bigints.UInt64;
 
 public class SlashableAttestation {
 
-  private List<UnsignedLong> validator_indices;
+  private List<UInt64> validator_indices;
   private AttestationData data;
   private Bytes32 custody_bitfield;
   private BLSSignature aggregate_signature;
 
   public SlashableAttestation(
-      List<UnsignedLong> validator_indices,
+      List<UInt64> validator_indices,
       AttestationData data,
       Bytes32 custody_bitfield,
       BLSSignature aggregate_signature) {
@@ -44,11 +44,7 @@ public class SlashableAttestation {
         bytes,
         reader ->
             new SlashableAttestation(
-                reader
-                    .readUInt64List()
-                    .stream()
-                    .map(UnsignedLong::fromLongBits)
-                    .collect(Collectors.toList()),
+                reader.readUInt64List().stream().map(UInt64::valueOf).collect(Collectors.toList()),
                 AttestationData.fromBytes(reader.readBytes()),
                 Bytes32.wrap(reader.readBytes()),
                 BLSSignature.fromBytes(reader.readBytes())));
@@ -58,8 +54,7 @@ public class SlashableAttestation {
     return SSZ.encode(
         writer -> {
           writer.writeULongIntList(
-              64,
-              validator_indices.stream().map(UnsignedLong::longValue).collect(Collectors.toList()));
+              64, validator_indices.stream().map(UInt64::toLong).collect(Collectors.toList()));
           writer.writeBytes(data.toBytes());
           writer.writeBytes(custody_bitfield);
           writer.writeBytes(aggregate_signature.toBytes());
@@ -109,11 +104,11 @@ public class SlashableAttestation {
     this.aggregate_signature = aggregate_signature;
   }
 
-  public List<UnsignedLong> getValidator_indices() {
+  public List<UInt64> getValidator_indices() {
     return validator_indices;
   }
 
-  public void setValidator_indices(List<UnsignedLong> validator_indices) {
+  public void setValidator_indices(List<UInt64> validator_indices) {
     this.validator_indices = validator_indices;
   }
 

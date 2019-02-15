@@ -13,18 +13,18 @@
 
 package tech.pegasys.artemis.datastructures.state;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.Objects;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.ssz.SSZ;
+import net.consensys.cava.units.bigints.UInt64;
 
 public class Fork {
 
-  private UnsignedLong previous_version;
-  private UnsignedLong current_version;
-  private UnsignedLong epoch;
+  private UInt64 previous_version;
+  private UInt64 current_version;
+  private UInt64 epoch;
 
-  public Fork(UnsignedLong previous_version, UnsignedLong current_version, UnsignedLong epoch) {
+  public Fork(UInt64 previous_version, UInt64 current_version, UInt64 epoch) {
     this.previous_version = previous_version;
     this.current_version = current_version;
     this.epoch = epoch;
@@ -35,17 +35,17 @@ public class Fork {
         bytes,
         reader ->
             new Fork(
-                UnsignedLong.fromLongBits(reader.readUInt64()),
-                UnsignedLong.fromLongBits(reader.readUInt64()),
-                UnsignedLong.fromLongBits(reader.readUInt64())));
+                UInt64.valueOf(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64())));
   }
 
   public Bytes toBytes() {
     return SSZ.encode(
         writer -> {
-          writer.writeUInt64(previous_version.longValue());
-          writer.writeUInt64(current_version.longValue());
-          writer.writeUInt64(epoch.longValue());
+          writer.writeUInt64(previous_version.toLong());
+          writer.writeUInt64(current_version.toLong());
+          writer.writeUInt64(epoch.toLong());
         });
   }
 
@@ -75,27 +75,27 @@ public class Fork {
   }
 
   /** ******************* * GETTERS & SETTERS * * ******************* */
-  public UnsignedLong getPrevious_version() {
+  public UInt64 getPrevious_version() {
     return previous_version;
   }
 
-  public void setPrevious_version(UnsignedLong previous_version) {
+  public void setPrevious_version(UInt64 previous_version) {
     this.previous_version = previous_version;
   }
 
-  public UnsignedLong getCurrent_version() {
+  public UInt64 getCurrent_version() {
     return current_version;
   }
 
-  public void setCurrent_version(UnsignedLong current_version) {
+  public void setCurrent_version(UInt64 current_version) {
     this.current_version = current_version;
   }
 
-  public UnsignedLong getEpoch() {
+  public UInt64 getEpoch() {
     return epoch;
   }
 
-  public void setEpoch(UnsignedLong epoch) {
+  public void setEpoch(UInt64 epoch) {
     this.epoch = epoch;
   }
 }

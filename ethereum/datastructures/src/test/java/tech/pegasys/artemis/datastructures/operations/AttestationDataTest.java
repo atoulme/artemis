@@ -15,22 +15,22 @@ package tech.pegasys.artemis.datastructures.operations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUnsignedLong;
+import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUInt64;
 
-import com.google.common.primitives.UnsignedLong;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes32;
+import net.consensys.cava.units.bigints.UInt64;
 import org.junit.jupiter.api.Test;
 
 class AttestationDataTest {
 
-  private UnsignedLong slot = randomUnsignedLong();
-  private UnsignedLong shard = randomUnsignedLong();
+  private UInt64 slot = randomUInt64();
+  private UInt64 shard = randomUInt64();
   private Bytes32 beaconBlockRoot = Bytes32.random();
   private Bytes32 epochBoundaryRoot = Bytes32.random();
   private Bytes32 shardBlockRoot = Bytes32.random();
   private Bytes32 latestCrosslinkRoot = Bytes32.random();
-  private UnsignedLong justifiedEpoch = randomUnsignedLong();
+  private UInt64 justifiedEpoch = randomUInt64();
   private Bytes32 justifiedBlockRoot = Bytes32.random();
 
   private AttestationData attestationData =
@@ -71,7 +71,7 @@ class AttestationDataTest {
   void equalsReturnsFalseWhenSlotsAreDifferent() {
     AttestationData testAttestationData =
         new AttestationData(
-            slot.plus(randomUnsignedLong()),
+            slot.add(randomUInt64()),
             shard,
             beaconBlockRoot,
             epochBoundaryRoot,
@@ -88,7 +88,7 @@ class AttestationDataTest {
     AttestationData testAttestationData =
         new AttestationData(
             slot,
-            shard.plus(randomUnsignedLong()),
+            shard.add(randomUInt64()),
             beaconBlockRoot,
             epochBoundaryRoot,
             shardBlockRoot,
@@ -173,7 +173,7 @@ class AttestationDataTest {
             epochBoundaryRoot,
             shardBlockRoot,
             latestCrosslinkRoot,
-            justifiedEpoch.plus(randomUnsignedLong()),
+            justifiedEpoch.add(randomUInt64()),
             justifiedBlockRoot);
 
     assertNotEquals(attestationData, testAttestationData);

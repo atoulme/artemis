@@ -17,12 +17,12 @@ import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomD
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.google.common.primitives.UnsignedLong;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import net.consensys.cava.bytes.Bytes32;
+import net.consensys.cava.units.bigints.UInt64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tech.pegasys.artemis.datastructures.Constants;
@@ -59,7 +59,7 @@ public class StateTreeManager {
     this.state =
         BeaconStateUtil.get_initial_beacon_state(
             deposits,
-            UnsignedLong.valueOf(Constants.GENESIS_SLOT),
+            UInt64.valueOf(Constants.GENESIS_SLOT),
             new Eth1Data(Bytes32.ZERO, Bytes32.ZERO));
   }
 

@@ -13,18 +13,18 @@
 
 package tech.pegasys.artemis.datastructures.operations;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.Objects;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.ssz.SSZ;
+import net.consensys.cava.units.bigints.UInt64;
 
 public class Exit {
 
-  private UnsignedLong epoch;
-  private UnsignedLong validator_index;
+  private UInt64 epoch;
+  private UInt64 validator_index;
   private BLSSignature signature;
 
-  public Exit(UnsignedLong epoch, UnsignedLong validator_index, BLSSignature signature) {
+  public Exit(UInt64 epoch, UInt64 validator_index, BLSSignature signature) {
     this.epoch = epoch;
     this.validator_index = validator_index;
     this.signature = signature;
@@ -35,16 +35,16 @@ public class Exit {
         bytes,
         reader ->
             new Exit(
-                UnsignedLong.fromLongBits(reader.readUInt64()),
-                UnsignedLong.fromLongBits(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
                 BLSSignature.fromBytes(reader.readBytes())));
   }
 
   public Bytes toBytes() {
     return SSZ.encode(
         writer -> {
-          writer.writeUInt64(epoch.longValue());
-          writer.writeUInt64(validator_index.longValue());
+          writer.writeUInt64(epoch.toLong());
+          writer.writeUInt64(validator_index.toLong());
           writer.writeBytes(signature.toBytes());
         });
   }
@@ -75,19 +75,19 @@ public class Exit {
   }
 
   /** ******************* * GETTERS & SETTERS * * ******************* */
-  public UnsignedLong getEpoch() {
+  public UInt64 getEpoch() {
     return epoch;
   }
 
-  public void setEpoch(UnsignedLong epoch) {
+  public void setEpoch(UInt64 epoch) {
     this.epoch = epoch;
   }
 
-  public UnsignedLong getValidator_index() {
+  public UInt64 getValidator_index() {
     return validator_index;
   }
 
-  public void setValidator_index(UnsignedLong validator_index) {
+  public void setValidator_index(UInt64 validator_index) {
     this.validator_index = validator_index;
   }
 

@@ -13,11 +13,11 @@
 
 package tech.pegasys.artemis.datastructures.state;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.Objects;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes32;
 import net.consensys.cava.ssz.SSZ;
+import net.consensys.cava.units.bigints.UInt64;
 import tech.pegasys.artemis.datastructures.operations.AttestationData;
 
 public class PendingAttestation {
@@ -25,13 +25,13 @@ public class PendingAttestation {
   private AttestationData data;
   private Bytes32 participation_bitfield;
   private Bytes32 custody_bitfield;
-  private UnsignedLong slot_included;
+  private UInt64 slot_included;
 
   public PendingAttestation(
       AttestationData data,
       Bytes32 participation_bitfield,
       Bytes32 custody_bitfield,
-      UnsignedLong slot_included) {
+      UInt64 slot_included) {
     this.data = data;
     this.participation_bitfield = participation_bitfield;
     this.custody_bitfield = custody_bitfield;
@@ -46,7 +46,7 @@ public class PendingAttestation {
                 AttestationData.fromBytes(reader.readBytes()),
                 Bytes32.wrap(reader.readBytes()),
                 Bytes32.wrap(reader.readBytes()),
-                UnsignedLong.fromLongBits(reader.readUInt64())));
+                UInt64.valueOf(reader.readUInt64())));
   }
 
   public Bytes toBytes() {
@@ -55,7 +55,7 @@ public class PendingAttestation {
           writer.writeBytes(data.toBytes());
           writer.writeBytes(participation_bitfield);
           writer.writeBytes(custody_bitfield);
-          writer.writeUInt64(slot_included.longValue());
+          writer.writeUInt64(slot_included.toLong());
         });
   }
 
@@ -110,11 +110,11 @@ public class PendingAttestation {
     this.custody_bitfield = custody_bitfield;
   }
 
-  public UnsignedLong getSlot_included() {
+  public UInt64 getSlot_included() {
     return slot_included;
   }
 
-  public void setSlot_included(UnsignedLong slot_included) {
+  public void setSlot_included(UInt64 slot_included) {
     this.slot_included = slot_included;
   }
 }

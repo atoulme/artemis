@@ -13,13 +13,13 @@
 
 package tech.pegasys.artemis.util.bitwise;
 
-import com.google.common.primitives.UnsignedLong;
+import net.consensys.cava.units.bigints.UInt64;
 
 public class BitwiseOps {
 
   /** Returns a bitwiseOr of the parameters a and b */
-  public static UnsignedLong or(UnsignedLong a, UnsignedLong b) {
-    return UnsignedLong.fromLongBits(a.longValue() | b.longValue());
+  public static UInt64 or(UInt64 a, UInt64 b) {
+    return a.or(b);
   }
 
   // Shift methods below might differ from actual bitwise implementations
@@ -27,12 +27,12 @@ public class BitwiseOps {
   // slide the bits to the left, and drop the one at most significant position
 
   /** Performs bitwise left shift on number a, i times */
-  public static UnsignedLong leftShift(UnsignedLong a, int i) {
-    return UnsignedLong.fromLongBits(a.longValue() << i);
+  public static UInt64 leftShift(UInt64 a, int i) {
+    return a.shiftLeft(i);
   }
 
   /** Performs bitwise right shift on number a, i times */
-  public static UnsignedLong rightShift(UnsignedLong a, int i) {
-    return UnsignedLong.fromLongBits(a.longValue() >> i);
+  public static UInt64 rightShift(UInt64 a, int i) {
+    return a.shiftRight(i);
   }
 }

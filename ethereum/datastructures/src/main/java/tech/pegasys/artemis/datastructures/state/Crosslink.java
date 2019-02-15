@@ -13,18 +13,18 @@
 
 package tech.pegasys.artemis.datastructures.state;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.Objects;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes32;
 import net.consensys.cava.ssz.SSZ;
+import net.consensys.cava.units.bigints.UInt64;
 
 public class Crosslink {
 
-  private UnsignedLong epoch;
+  private UInt64 epoch;
   private Bytes32 shard_block_root;
 
-  public Crosslink(UnsignedLong epoch, Bytes32 shard_block_root) {
+  public Crosslink(UInt64 epoch, Bytes32 shard_block_root) {
     this.epoch = epoch;
     this.shard_block_root = shard_block_root;
   }
@@ -33,14 +33,13 @@ public class Crosslink {
     return SSZ.decode(
         bytes,
         reader ->
-            new Crosslink(
-                UnsignedLong.fromLongBits(reader.readUInt64()), Bytes32.wrap(reader.readBytes())));
+            new Crosslink(UInt64.valueOf(reader.readUInt64()), Bytes32.wrap(reader.readBytes())));
   }
 
   public Bytes toBytes() {
     return SSZ.encode(
         writer -> {
-          writer.writeUInt64(epoch.longValue());
+          writer.writeUInt64(epoch.toLong());
           writer.writeBytes(shard_block_root);
         });
   }
@@ -78,11 +77,11 @@ public class Crosslink {
     this.shard_block_root = shard_block_root;
   }
 
-  public UnsignedLong getEpoch() {
+  public UInt64 getEpoch() {
     return epoch;
   }
 
-  public void setEpoch(UnsignedLong epoch) {
+  public void setEpoch(UInt64 epoch) {
     this.epoch = epoch;
   }
 }

@@ -13,18 +13,18 @@
 
 package tech.pegasys.artemis.datastructures.operations;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.Objects;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.ssz.SSZ;
+import net.consensys.cava.units.bigints.UInt64;
 
 public class DepositData {
 
-  private UnsignedLong amount;
-  private UnsignedLong timestamp;
+  private UInt64 amount;
+  private UInt64 timestamp;
   private DepositInput deposit_input;
 
-  public DepositData(UnsignedLong amount, UnsignedLong timestamp, DepositInput deposit_input) {
+  public DepositData(UInt64 amount, UInt64 timestamp, DepositInput deposit_input) {
     this.amount = amount;
     this.timestamp = timestamp;
     this.deposit_input = deposit_input;
@@ -35,16 +35,16 @@ public class DepositData {
         bytes,
         reader ->
             new DepositData(
-                UnsignedLong.fromLongBits(reader.readUInt64()),
-                UnsignedLong.fromLongBits(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
                 DepositInput.fromBytes(reader.readBytes())));
   }
 
   public Bytes toBytes() {
     return SSZ.encode(
         writer -> {
-          writer.writeUInt64(amount.longValue());
-          writer.writeUInt64(timestamp.longValue());
+          writer.writeUInt64(amount.toLong());
+          writer.writeUInt64(timestamp.toLong());
           writer.writeBytes(deposit_input.toBytes());
         });
   }
@@ -83,19 +83,19 @@ public class DepositData {
     this.deposit_input = deposit_input;
   }
 
-  public UnsignedLong getAmount() {
+  public UInt64 getAmount() {
     return amount;
   }
 
-  public void setAmount(UnsignedLong amount) {
+  public void setAmount(UInt64 amount) {
     this.amount = amount;
   }
 
-  public UnsignedLong getTimestamp() {
+  public UInt64 getTimestamp() {
     return timestamp;
   }
 
-  public void setTimestamp(UnsignedLong timestamp) {
+  public void setTimestamp(UInt64 timestamp) {
     this.timestamp = timestamp;
   }
 }

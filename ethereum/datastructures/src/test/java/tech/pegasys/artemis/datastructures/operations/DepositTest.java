@@ -16,9 +16,8 @@ package tech.pegasys.artemis.datastructures.operations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomDepositData;
-import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUnsignedLong;
+import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUInt64;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,13 +25,14 @@ import java.util.List;
 import java.util.Objects;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes32;
+import net.consensys.cava.units.bigints.UInt64;
 import org.junit.jupiter.api.Test;
 
 class DepositTest {
 
   private List<Bytes32> branch =
       Arrays.asList(Bytes32.random(), Bytes32.random(), Bytes32.random());
-  private UnsignedLong index = randomUnsignedLong();
+  private UInt64 index = randomUInt64();
   private DepositData depositData = randomDepositData();
 
   private Deposit deposit = new Deposit(branch, index, depositData);
@@ -64,7 +64,7 @@ class DepositTest {
 
   @Test
   void equalsReturnsFalseWhenIndicesAreDifferent() {
-    Deposit testDeposit = new Deposit(branch, index.plus(randomUnsignedLong()), depositData);
+    Deposit testDeposit = new Deposit(branch, index.add(randomUInt64()), depositData);
 
     assertNotEquals(deposit, testDeposit);
   }

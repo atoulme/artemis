@@ -15,23 +15,23 @@ package tech.pegasys.artemis.datastructures.state;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUnsignedLong;
+import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUInt64;
 
-import com.google.common.primitives.UnsignedLong;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes32;
 import net.consensys.cava.bytes.Bytes48;
+import net.consensys.cava.units.bigints.UInt64;
 import org.junit.jupiter.api.Test;
 
 class ValidatorTest {
 
   private Bytes48 pubkey = Bytes48.random();
   private Bytes32 withdrawalCredentials = Bytes32.random();
-  private UnsignedLong activationEpoch = randomUnsignedLong();
-  private UnsignedLong exitEpoch = randomUnsignedLong();
-  private UnsignedLong withdrawalEpoch = randomUnsignedLong();
-  private UnsignedLong penalizedEpoch = randomUnsignedLong();
-  private UnsignedLong statusFlags = randomUnsignedLong();
+  private UInt64 activationEpoch = randomUInt64();
+  private UInt64 exitEpoch = randomUInt64();
+  private UInt64 withdrawalEpoch = randomUInt64();
+  private UInt64 penalizedEpoch = randomUInt64();
+  private UInt64 statusFlags = randomUInt64();
 
   private Validator validator =
       new Validator(
@@ -101,7 +101,7 @@ class ValidatorTest {
         new Validator(
             pubkey,
             withdrawalCredentials,
-            activationEpoch.plus(randomUnsignedLong()),
+            activationEpoch.add(randomUInt64()),
             exitEpoch,
             withdrawalEpoch,
             penalizedEpoch,
@@ -117,7 +117,7 @@ class ValidatorTest {
             pubkey,
             withdrawalCredentials,
             activationEpoch,
-            exitEpoch.plus(randomUnsignedLong()),
+            exitEpoch.add(randomUInt64()),
             withdrawalEpoch,
             penalizedEpoch,
             statusFlags);
@@ -133,7 +133,7 @@ class ValidatorTest {
             withdrawalCredentials,
             activationEpoch,
             exitEpoch,
-            withdrawalEpoch.plus(randomUnsignedLong()),
+            withdrawalEpoch.add(randomUInt64()),
             penalizedEpoch,
             statusFlags);
 
@@ -149,7 +149,7 @@ class ValidatorTest {
             activationEpoch,
             exitEpoch,
             withdrawalEpoch,
-            penalizedEpoch.plus(randomUnsignedLong()),
+            penalizedEpoch.add(randomUInt64()),
             statusFlags);
 
     assertNotEquals(validator, testValidator);
@@ -165,7 +165,7 @@ class ValidatorTest {
             exitEpoch,
             withdrawalEpoch,
             penalizedEpoch,
-            statusFlags.plus(randomUnsignedLong()));
+            statusFlags.add(randomUInt64()));
 
     assertNotEquals(validator, testValidator);
   }

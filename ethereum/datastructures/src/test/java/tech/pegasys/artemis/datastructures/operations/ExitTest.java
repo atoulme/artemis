@@ -15,17 +15,17 @@ package tech.pegasys.artemis.datastructures.operations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUnsignedLong;
+import static tech.pegasys.artemis.datastructures.util.DataStructureUtil.randomUInt64;
 
-import com.google.common.primitives.UnsignedLong;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes48;
+import net.consensys.cava.units.bigints.UInt64;
 import org.junit.jupiter.api.Test;
 
 class ExitTest {
 
-  private UnsignedLong epoch = randomUnsignedLong();
-  private UnsignedLong validatorIndex = randomUnsignedLong();
+  private UInt64 epoch = randomUInt64();
+  private UInt64 validatorIndex = randomUInt64();
   private BLSSignature signature = new BLSSignature(Bytes48.random(), Bytes48.random());
 
   private Exit exit = new Exit(epoch, validatorIndex, signature);
@@ -46,14 +46,14 @@ class ExitTest {
 
   @Test
   void equalsReturnsFalseWhenEpochsAreDifferent() {
-    Exit testExit = new Exit(epoch.plus(randomUnsignedLong()), validatorIndex, signature);
+    Exit testExit = new Exit(epoch.add(randomUInt64()), validatorIndex, signature);
 
     assertNotEquals(exit, testExit);
   }
 
   @Test
   void equalsReturnsFalseWhenValidatorIndicesAreDifferent() {
-    Exit testExit = new Exit(epoch, validatorIndex.plus(randomUnsignedLong()), signature);
+    Exit testExit = new Exit(epoch, validatorIndex.add(randomUInt64()), signature);
 
     assertNotEquals(exit, testExit);
   }

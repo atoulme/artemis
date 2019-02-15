@@ -13,19 +13,19 @@
 
 package tech.pegasys.artemis.datastructures.blocks;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.Objects;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes32;
 import net.consensys.cava.ssz.SSZ;
+import net.consensys.cava.units.bigints.UInt64;
 
 public class ProposalSignedData {
 
-  private UnsignedLong slot;
-  private UnsignedLong shard;
+  private UInt64 slot;
+  private UInt64 shard;
   private Bytes32 block_root;
 
-  public ProposalSignedData(UnsignedLong slot, UnsignedLong shard, Bytes32 block_root) {
+  public ProposalSignedData(UInt64 slot, UInt64 shard, Bytes32 block_root) {
     this.slot = slot;
     this.shard = shard;
     this.block_root = block_root;
@@ -36,16 +36,16 @@ public class ProposalSignedData {
         bytes,
         reader ->
             new ProposalSignedData(
-                UnsignedLong.fromLongBits(reader.readUInt64()),
-                UnsignedLong.fromLongBits(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
                 Bytes32.wrap(reader.readBytes())));
   }
 
   public Bytes toBytes() {
     return SSZ.encode(
         writer -> {
-          writer.writeUInt64(slot.longValue());
-          writer.writeUInt64(shard.longValue());
+          writer.writeUInt64(slot.toLong());
+          writer.writeUInt64(shard.toLong());
           writer.writeBytes(block_root);
         });
   }
@@ -76,19 +76,19 @@ public class ProposalSignedData {
   }
 
   /** ******************* * GETTERS & SETTERS * * ******************* */
-  public UnsignedLong getSlot() {
+  public UInt64 getSlot() {
     return slot;
   }
 
-  public void setSlot(UnsignedLong slot) {
+  public void setSlot(UInt64 slot) {
     this.slot = slot;
   }
 
-  public UnsignedLong getShard() {
+  public UInt64 getShard() {
     return shard;
   }
 
-  public void setShard(UnsignedLong shard) {
+  public void setShard(UInt64 shard) {
     this.shard = shard;
   }
 

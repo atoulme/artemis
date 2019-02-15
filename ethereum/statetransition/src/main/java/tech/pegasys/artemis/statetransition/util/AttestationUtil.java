@@ -13,10 +13,10 @@
 
 package tech.pegasys.artemis.statetransition.util;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.ArrayList;
 import java.util.List;
 import net.consensys.cava.bytes.Bytes32;
+import net.consensys.cava.units.bigints.UInt64;
 import tech.pegasys.artemis.datastructures.state.CrosslinkCommittee;
 import tech.pegasys.artemis.datastructures.state.PendingAttestation;
 import tech.pegasys.artemis.statetransition.BeaconState;
@@ -31,8 +31,8 @@ public class AttestationUtil {
    * @param epoch
    * @return
    */
-  public static List<PendingAttestation> get_epoch_attestations(
-      BeaconState state, UnsignedLong epoch) throws Exception {
+  public static List<PendingAttestation> get_epoch_attestations(BeaconState state, UInt64 epoch)
+      throws Exception {
     List<PendingAttestation> latest_attestations = state.getLatest_attestations();
     List<PendingAttestation> epoch_attestations = new ArrayList<>();
 
@@ -50,7 +50,7 @@ public class AttestationUtil {
   public static List<PendingAttestation> get_current_epoch_boundary_attestations(
       BeaconState state, List<PendingAttestation> current_epoch_attestations) throws Exception {
 
-    UnsignedLong current_epoch = BeaconStateUtil.get_current_epoch(state);
+    UInt64 current_epoch = BeaconStateUtil.get_current_epoch(state);
 
     List<PendingAttestation> current_epoch_boundary_attestations = new ArrayList<>();
 
@@ -76,7 +76,7 @@ public class AttestationUtil {
   public static List<PendingAttestation> get_previous_epoch_boundary_attestations(
       BeaconState state, List<PendingAttestation> previous_epoch_attestations) throws Exception {
 
-    UnsignedLong previous_epoch = BeaconStateUtil.get_previous_epoch(state);
+    UInt64 previous_epoch = BeaconStateUtil.get_previous_epoch(state);
 
     List<PendingAttestation> previous_epoch_boundary_attestations = new ArrayList<>();
 
@@ -109,9 +109,9 @@ public class AttestationUtil {
     return new ArrayList<Integer>();
   }
 
-  public static UnsignedLong get_previous_epoch_justified_attesting_balance(BeaconState state) {
+  public static UInt64 get_previous_epoch_justified_attesting_balance(BeaconState state) {
     // todo
-    return UnsignedLong.ZERO;
+    return UInt64.ZERO;
   }
 
   public static List<Integer> get_previous_epoch_boundary_attester_indices(BeaconState state) {
@@ -126,11 +126,11 @@ public class AttestationUtil {
    * @param state
    * @return current_epoch_boundary_attesting_balance
    */
-  public static UnsignedLong get_current_epoch_boundary_attesting_balance(BeaconState state)
+  public static UInt64 get_current_epoch_boundary_attesting_balance(BeaconState state)
       throws Exception {
 
     // Get current epoch
-    UnsignedLong current_epoch = BeaconStateUtil.get_current_epoch(state);
+    UInt64 current_epoch = BeaconStateUtil.get_current_epoch(state);
 
     // Get current_epoch_attestations
     List<PendingAttestation> current_epoch_attestations =
@@ -145,7 +145,7 @@ public class AttestationUtil {
         AttestationUtil.get_attester_indices(state, current_epoch_boundary_attestations);
 
     // Get current_epoch_boundary_attesting_balance
-    UnsignedLong current_epoch_boundary_attesting_balance =
+    UInt64 current_epoch_boundary_attesting_balance =
         AttestationUtil.get_total_attesting_balance(state, current_epoch_boundary_attester_indices);
 
     return current_epoch_boundary_attesting_balance;
@@ -158,11 +158,11 @@ public class AttestationUtil {
    * @param state
    * @return previous_epoch_boundary_attesting_balance
    */
-  public static UnsignedLong get_previous_epoch_boundary_attesting_balance(BeaconState state)
+  public static UInt64 get_previous_epoch_boundary_attesting_balance(BeaconState state)
       throws Exception {
 
     // Get previous epoch
-    UnsignedLong previous_epoch = BeaconStateUtil.get_previous_epoch(state);
+    UInt64 previous_epoch = BeaconStateUtil.get_previous_epoch(state);
 
     // Get previous_epoch_attestations
     List<PendingAttestation> previous_epoch_attestations =
@@ -178,7 +178,7 @@ public class AttestationUtil {
         AttestationUtil.get_attester_indices(state, previous_epoch_boundary_attestations);
 
     // Get previous_epoch_boundary_attesting_balance
-    UnsignedLong previous_epoch_boundary_attesting_balance =
+    UInt64 previous_epoch_boundary_attesting_balance =
         AttestationUtil.get_total_attesting_balance(
             state, previous_epoch_boundary_attester_indices);
 
@@ -190,9 +190,9 @@ public class AttestationUtil {
     return new ArrayList<Integer>();
   }
 
-  public static UnsignedLong get_previous_epoch_head_attesting_balance(BeaconState state) {
+  public static UInt64 get_previous_epoch_head_attesting_balance(BeaconState state) {
     // todo
-    return UnsignedLong.ZERO;
+    return UInt64.ZERO;
   }
 
   public static List<Integer> get_previous_epoch_attester_indices(BeaconState state) {
@@ -200,9 +200,9 @@ public class AttestationUtil {
     return new ArrayList<Integer>();
   }
 
-  public static UnsignedLong inclusion_distance(BeaconState state, Integer index) {
+  public static UInt64 inclusion_distance(BeaconState state, Integer index) {
     // todo
-    return UnsignedLong.ZERO;
+    return UInt64.ZERO;
   }
 
   /**
@@ -243,12 +243,12 @@ public class AttestationUtil {
    * @param attester_indices
    * @return total_attesting_balance
    */
-  public static UnsignedLong get_total_attesting_balance(
+  public static UInt64 get_total_attesting_balance(
       BeaconState state, List<Integer> attester_indices) {
-    UnsignedLong attesting_balance = UnsignedLong.ZERO;
+    UInt64 attesting_balance = UInt64.ZERO;
     for (Integer attester_index : attester_indices) {
       attesting_balance =
-          attesting_balance.plus(BeaconStateUtil.get_effective_balance(state, attester_index));
+          attesting_balance.add(BeaconStateUtil.get_effective_balance(state, attester_index));
     }
 
     return attesting_balance;
@@ -267,7 +267,7 @@ public class AttestationUtil {
    * @return
    * @throws BlockValidationException
    */
-  public static UnsignedLong total_attesting_balance(
+  public static UInt64 total_attesting_balance(
       BeaconState state, CrosslinkCommittee crosslink_committee, Bytes32 shard_block_root)
       throws Exception {
     List<Integer> attesting_validator_indices =
@@ -287,8 +287,8 @@ public class AttestationUtil {
   public static ArrayList<Integer> attesting_validator_indices(
       BeaconState state, CrosslinkCommittee crosslink_committee, Bytes32 shard_block_root)
       throws Exception {
-    UnsignedLong current_epoch = BeaconStateUtil.get_current_epoch(state);
-    UnsignedLong previous_epoch = BeaconStateUtil.get_previous_epoch(state);
+    UInt64 current_epoch = BeaconStateUtil.get_current_epoch(state);
+    UInt64 previous_epoch = BeaconStateUtil.get_previous_epoch(state);
     List<PendingAttestation> combined_attestations = get_epoch_attestations(state, current_epoch);
     combined_attestations.addAll(get_epoch_attestations(state, previous_epoch));
 

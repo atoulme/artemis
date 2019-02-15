@@ -15,7 +15,6 @@ package tech.pegasys.artemis.statetransition;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +23,7 @@ import net.consensys.cava.bytes.Bytes32;
 import net.consensys.cava.bytes.Bytes48;
 import net.consensys.cava.crypto.Hash;
 import net.consensys.cava.junit.BouncyCastleExtension;
+import net.consensys.cava.units.bigints.UInt64;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import tech.pegasys.artemis.datastructures.Constants;
@@ -43,47 +43,47 @@ class StateTransitionTest {
         new Validator(
             Bytes48.leftPad(Bytes.of(0)),
             Bytes32.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO));
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO));
     validators.add(
         new Validator(
             Bytes48.leftPad(Bytes.of(0)),
             Bytes32.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO));
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO));
     validators.add(
         new Validator(
             Bytes48.leftPad(Bytes.of(0)),
             Bytes32.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO));
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO));
     validators.add(
         new Validator(
             Bytes48.leftPad(Bytes.of(0)),
             Bytes32.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO));
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO));
     validators.add(
         new Validator(
             Bytes48.leftPad(Bytes.of(0)),
             Bytes32.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO,
-            UnsignedLong.ZERO));
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO,
+            UInt64.ZERO));
     state.setValidator_registry(validators);
 
     state.setLatest_block_roots(
@@ -99,7 +99,7 @@ class StateTransitionTest {
     state.setLatest_randao_mixes(
         new ArrayList<Bytes32>(
             Collections.nCopies(Constants.LATEST_RANDAO_MIXES_LENGTH, Bytes32.ZERO)));
-    state.setSlot(UnsignedLong.valueOf(12));
+    state.setSlot(UInt64.valueOf(12));
     List<Bytes32> latestRandaoMixes = state.getLatest_randao_mixes();
     latestRandaoMixes.set(11, Hash.keccak256(Bytes32.fromHexString("0x01")));
     latestRandaoMixes.set(12, Hash.keccak256(Bytes32.ZERO));
@@ -132,7 +132,7 @@ class StateTransitionTest {
           committee.add(Integer.valueOf((int) Math.round(Math.random() * 64)));
         }
         shard_commitees.add(
-            new ShardCommittee(UnsignedLong.valueOf(Math.round(Math.random() * 5000)), committee));
+            new ShardCommittee(UInt64.valueOf(Math.round(Math.random() * 5000)), committee));
       }
       shard_committees_at_slots.add(shard_commitees);
     }

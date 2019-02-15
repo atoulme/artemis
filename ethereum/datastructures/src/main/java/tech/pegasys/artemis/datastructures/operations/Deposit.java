@@ -13,21 +13,21 @@
 
 package tech.pegasys.artemis.datastructures.operations;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.bytes.Bytes32;
 import net.consensys.cava.ssz.SSZ;
+import net.consensys.cava.units.bigints.UInt64;
 
 public class Deposit {
 
   private List<Bytes32> branch;
-  private UnsignedLong index;
+  private UInt64 index;
   private DepositData deposit_data;
 
-  public Deposit(List<Bytes32> branch, UnsignedLong index, DepositData deposit_data) {
+  public Deposit(List<Bytes32> branch, UInt64 index, DepositData deposit_data) {
     this.branch = branch;
     this.index = index;
     this.deposit_data = deposit_data;
@@ -39,7 +39,7 @@ public class Deposit {
         reader ->
             new Deposit(
                 reader.readBytesList().stream().map(Bytes32::wrap).collect(Collectors.toList()),
-                UnsignedLong.fromLongBits(reader.readUInt64()),
+                UInt64.valueOf(reader.readUInt64()),
                 DepositData.fromBytes(reader.readBytes())));
   }
 
@@ -47,7 +47,7 @@ public class Deposit {
     return SSZ.encode(
         writer -> {
           writer.writeBytesList(branch);
-          writer.writeUInt64(index.longValue());
+          writer.writeUInt64(index.toLong());
           writer.writeBytes(deposit_data.toBytes());
         });
   }
@@ -86,11 +86,11 @@ public class Deposit {
     this.branch = branch;
   }
 
-  public UnsignedLong getIndex() {
+  public UInt64 getIndex() {
     return index;
   }
 
-  public void setIndex(UnsignedLong index) {
+  public void setIndex(UInt64 index) {
     this.index = index;
   }
 

@@ -13,17 +13,17 @@
 
 package tech.pegasys.artemis.datastructures.blocks;
 
-import com.google.common.primitives.UnsignedLong;
 import java.util.Objects;
 import net.consensys.cava.bytes.Bytes;
 import net.consensys.cava.ssz.SSZ;
+import net.consensys.cava.units.bigints.UInt64;
 
 public final class Eth1DataVote {
 
   private Eth1Data eth1_data;
-  private UnsignedLong vote_count;
+  private UInt64 vote_count;
 
-  public Eth1DataVote(Eth1Data eth1_data, UnsignedLong vote_count) {
+  public Eth1DataVote(Eth1Data eth1_data, UInt64 vote_count) {
     this.eth1_data = eth1_data;
     this.vote_count = vote_count;
   }
@@ -33,15 +33,14 @@ public final class Eth1DataVote {
         bytes,
         reader ->
             new Eth1DataVote(
-                Eth1Data.fromBytes(reader.readBytes()),
-                UnsignedLong.fromLongBits(reader.readUInt64())));
+                Eth1Data.fromBytes(reader.readBytes()), UInt64.valueOf(reader.readUInt64())));
   }
 
   public Bytes toBytes() {
     return SSZ.encode(
         writer -> {
           writer.writeBytes(eth1_data.toBytes());
-          writer.writeUInt64(vote_count.longValue());
+          writer.writeUInt64(vote_count.toLong());
         });
   }
 
@@ -80,12 +79,12 @@ public final class Eth1DataVote {
   }
 
   /** @return the vote_count */
-  public UnsignedLong getVote_count() {
+  public UInt64 getVote_count() {
     return vote_count;
   }
 
   /** @param vote_count the vote_count to set */
-  public void setVote_count(UnsignedLong vote_count) {
+  public void setVote_count(UInt64 vote_count) {
     this.vote_count = vote_count;
   }
 }
