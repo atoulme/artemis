@@ -17,12 +17,20 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+
 import net.consensys.cava.config.Configuration;
 import net.consensys.cava.config.PropertyValidator;
 import net.consensys.cava.config.Schema;
 import net.consensys.cava.config.SchemaBuilder;
 
 final class ArtemisConfiguration {
+
+  private final Configuration config;
+
+  ArtemisConfiguration(Configuration config) {
+    this.config = config;
+  }
 
   static final Schema createSchema() {
     SchemaBuilder builder =
@@ -45,17 +53,43 @@ final class ArtemisConfiguration {
         1,
         "represents the total number of nodes on the network",
         PropertyValidator.inRange(1, 16384));
+    builder.addListOfMap("peers", Collections.emptyList(), "Static peers", null);
     return builder.toSchema();
   }
 
   private static final Schema schema = createSchema();
 
-  public static Configuration fromFile(String path) {
+  static ArtemisConfiguration fromFile(String path) {
     Path configPath = Paths.get(path);
     try {
-      return Configuration.fromToml(configPath, schema);
+      return new ArtemisConfiguration(Configuration.fromToml(configPath, schema));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
   }
+
+  public String getIdentity() {
+    return config.getString("identity");
+  }
+
+  public int getPort() {
+    return config.getInteger("port");
+  }
+
+  public int getAdvertisedPort() {
+    return config.getInteger("advertisedPort");
+  }
+
+  public String getNetworkInterface() {
+    return config.getString("networkInterface");
+  }
+
+  public int getNumValidators() {
+    return config.getInteger("numValidators");
+  }
+
+  public int getNumNodes() {
+    return config.getInteger("numNodes");
+  }
 }
+
