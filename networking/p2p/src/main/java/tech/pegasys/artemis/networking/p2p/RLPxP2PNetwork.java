@@ -14,6 +14,7 @@
 package tech.pegasys.artemis.networking.p2p;
 
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import io.vertx.core.Vertx;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -34,6 +35,7 @@ import net.consensys.cava.rlpx.vertx.VertxRLPxService;
 import net.consensys.cava.rlpx.wire.WireConnection;
 import org.logl.log4j2.Log4j2LoggerProvider;
 import tech.pegasys.artemis.networking.p2p.api.P2PNetwork;
+import tech.pegasys.artemis.storage.ChainStorageClient;
 
 /**
  * Peer to peer network for beacon nodes, over a RLPx connection.
@@ -44,25 +46,45 @@ import tech.pegasys.artemis.networking.p2p.api.P2PNetwork;
  */
 public final class RLPxP2PNetwork implements P2PNetwork {
 
+  private static final long CHAIN_ID = 1;
+
   private final AtomicBoolean started = new AtomicBoolean(false);
+  private final EventBus eventBus;
   private final Vertx vertx;
   private final SECP256K1.KeyPair keyPair;
   private final int port;
   private final int advertisedPort;
   private final String networkInterface;
   private final Log4j2LoggerProvider loggerProvider;
-  private final EventBus eventBus;
+  private final long networkId;
+  private final List<URI> peers;
 
+  private ChainStorageClient client;
   private WireConnectionRepository wireConnectionRepository;
   private VertxRLPxService service;
 
+  /**
+   * Default constructor.
+   *
+   * @param eventBus the event bus
+   * @param vertx Vert.x instance to manage network
+   * @param client the client storage
+   * @param keyPair the identity of the node on network
+   * @param port the port to bind to
+   * @param advertisedPort the port to advertise
+   * @param networkInterface the network interface to bind to
+   * @param networkId the network ID to advertise to other peers
+   * @param staticPeers the list of peers to connect to on startup
+   */
   public RLPxP2PNetwork(
       EventBus eventBus,
       Vertx vertx,
       SECP256K1.KeyPair keyPair,
       int port,
       int advertisedPort,
-      String networkInterface) {
+      String networkInterface,
+      long networkId,
+      List<URI> staticPeers) {
     this.eventBus = eventBus;
     this.vertx = vertx;
     this.keyPair = keyPair;
@@ -70,6 +92,14 @@ public final class RLPxP2PNetwork implements P2PNetwork {
     this.advertisedPort = advertisedPort;
     this.networkInterface = networkInterface;
     this.loggerProvider = new Log4j2LoggerProvider();
+    this.networkId = networkId;
+    this.peers = staticPeers;
+    eventBus.register(this);
+  }
+
+  @Subscribe
+  public void setStorage(ChainStorageClient client) {
+    this.client = client;
   }
 
   @Override
@@ -84,8 +114,17 @@ public final class RLPxP2PNetwork implements P2PNetwork {
               networkInterface,
               advertisedPort,
               keyPair,
-              Collections.singletonList(new BeaconSubprotocol()),
+              Collections.singletonList(new BeaconSubprotocol(client, networkId, CHAIN_ID)),
               "Artemis 0.1");
+      try {
+        service.start().join(10, TimeUnit.SECONDS);
+        for (URI peer : peers) {
+          SECP256K1.PublicKey publicKey = SECP256K1.PublicKey.fromHexString(peer.getUserInfo());
+          service.connectTo(publicKey, new InetSocketAddress(peer.getHost(), peer.getPort()));
+        }
+      } catch (TimeoutException | InterruptedException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 
@@ -98,6 +137,7 @@ public final class RLPxP2PNetwork implements P2PNetwork {
         throw new RuntimeException(e);
       } finally {
         vertx.close();
+        eventBus.unregister(this);
       }
     }
   }

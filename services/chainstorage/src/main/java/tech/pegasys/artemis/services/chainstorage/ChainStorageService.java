@@ -14,11 +14,11 @@
 package tech.pegasys.artemis.services.chainstorage;
 
 import com.google.common.eventbus.EventBus;
-import net.consensys.cava.config.Configuration;
 import tech.pegasys.artemis.services.ServiceInterface;
 import tech.pegasys.artemis.storage.ChainStorage;
 import tech.pegasys.artemis.storage.ChainStorageServer;
 import tech.pegasys.artemis.util.alogger.ALogger;
+import tech.pegasys.artemis.util.configuration.ArtemisConfiguration;
 
 public class ChainStorageService implements ServiceInterface {
   private EventBus eventBus;
@@ -35,7 +35,7 @@ public class ChainStorageService implements ServiceInterface {
   }
 
   @Override
-  public void init(EventBus eventBus, Configuration config) {}
+  public void init(EventBus eventBus, ArtemisConfiguration config) {}
 
   @Override
   public void run() {
@@ -45,5 +45,9 @@ public class ChainStorageService implements ServiceInterface {
   @Override
   public void stop() {
     this.eventBus.unregister(this);
+  }
+
+  public ChainStorageServer getStorage() {
+    return chainStore;
   }
 }

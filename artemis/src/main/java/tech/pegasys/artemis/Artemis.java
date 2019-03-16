@@ -17,6 +17,7 @@ import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import picocli.CommandLine;
 import tech.pegasys.artemis.util.cli.CommandLineArguments;
+import tech.pegasys.artemis.util.configuration.ArtemisConfiguration;
 
 public final class Artemis {
 
@@ -26,7 +27,9 @@ public final class Artemis {
     CommandLineArguments cliArgs = new CommandLineArguments();
     CommandLine commandLine = new CommandLine(cliArgs);
     commandLine.parse(args);
-    BeaconNode node = new BeaconNode(commandLine, cliArgs);
+    BeaconNode node =
+        new BeaconNode(
+            commandLine, cliArgs, ArtemisConfiguration.fromFile(cliArgs.getConfigFile()));
     node.start();
 
     // Detect SIGTERM

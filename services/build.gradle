@@ -10,8 +10,12 @@ dependencies {
   implementation project(':ethereum:datastructures')
   implementation project(':ethereum:statetransition')
   implementation project(':util')
+  implementation project(':networking:p2p')
+  implementation project(':storage')
 
+  implementation 'io.vertx:vertx-core'
   implementation 'net.consensys.cava:cava-config'
+  implementation 'net.consensys.cava:cava-crypto'
   implementation 'com.google.guava:guava'
   implementation 'org.apache.logging.log4j:log4j-api'
   runtime 'org.apache.logging.log4j:log4j-core'

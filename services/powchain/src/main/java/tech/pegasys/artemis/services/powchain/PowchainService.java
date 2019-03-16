@@ -21,7 +21,6 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import net.consensys.cava.bytes.Bytes;
-import net.consensys.cava.config.Configuration;
 import org.apache.logging.log4j.Level;
 import org.web3j.protocol.core.methods.response.Log;
 import tech.pegasys.artemis.ganache.GanacheController;
@@ -33,6 +32,7 @@ import tech.pegasys.artemis.pow.contract.DepositContract.Eth2GenesisEventRespons
 import tech.pegasys.artemis.pow.event.Eth2Genesis;
 import tech.pegasys.artemis.services.ServiceInterface;
 import tech.pegasys.artemis.util.alogger.ALogger;
+import tech.pegasys.artemis.util.configuration.ArtemisConfiguration;
 
 public class PowchainService implements ServiceInterface {
 
@@ -57,7 +57,7 @@ public class PowchainService implements ServiceInterface {
   }
 
   @Override
-  public void init(EventBus eventBus, Configuration config) {}
+  public void init(EventBus eventBus, ArtemisConfiguration config) {}
 
   @Override
   public void run() {

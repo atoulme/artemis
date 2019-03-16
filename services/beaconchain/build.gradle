@@ -10,10 +10,11 @@ dependencies {
 
   implementation project(':ethereum:statetransition')
   implementation project(':ethereum:datastructures')
+  implementation project(':pow')
   implementation project(':services')
   implementation project(':services:powchain')
-  implementation project(':pow')
   implementation project(':services:beaconnode')
+  implementation project(':util')
 
   implementation 'com.google.guava:guava'
   implementation 'org.apache.logging.log4j:log4j-api'

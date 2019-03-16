@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import net.consensys.cava.bytes.Bytes;
+import net.consensys.cava.bytes.Bytes32;
 import org.apache.logging.log4j.Level;
 import tech.pegasys.artemis.datastructures.blocks.BeaconBlock;
 import tech.pegasys.artemis.datastructures.operations.Attestation;
@@ -220,5 +221,21 @@ public class ChainStorageClient implements ChainStorage {
         }
       }
     }
+  }
+
+  public Bytes32 getLatestFinalizedRoot() {
+    throw new UnsupportedOperationException();
+  }
+
+  public long getLatestFinalizedEpoch() {
+    throw new UnsupportedOperationException();
+  }
+
+  public Bytes32 getBestBlock() {
+    throw new UnsupportedOperationException();
+  }
+
+  public long getBestSlot() {
+    throw new UnsupportedOperationException();
   }
 }

@@ -17,10 +17,21 @@ import net.consensys.cava.rlpx.RLPxService;
 import net.consensys.cava.rlpx.wire.SubProtocol;
 import net.consensys.cava.rlpx.wire.SubProtocolHandler;
 import net.consensys.cava.rlpx.wire.SubProtocolIdentifier;
+import tech.pegasys.artemis.storage.ChainStorageClient;
 
 final class BeaconSubprotocol implements SubProtocol {
 
   static final SubProtocolIdentifier BEACON_ID = SubProtocolIdentifier.of("bea", 1);
+
+  private final ChainStorageClient client;
+  private final long networkId;
+  private final long chainId;
+
+  BeaconSubprotocol(ChainStorageClient client, long networkId, long chainId) {
+    this.client = client;
+    this.networkId = networkId;
+    this.chainId = chainId;
+  }
 
   @Override
   public SubProtocolIdentifier id() {
@@ -41,6 +52,6 @@ final class BeaconSubprotocol implements SubProtocol {
 
   @Override
   public SubProtocolHandler createHandler(RLPxService service) {
-    return new BeaconSubprotocolHandler(service);
+    return new BeaconSubprotocolHandler(service, client, networkId, chainId);
   }
 }

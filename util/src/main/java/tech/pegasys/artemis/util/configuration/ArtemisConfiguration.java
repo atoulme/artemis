@@ -11,31 +11,39 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package tech.pegasys.artemis;
+package tech.pegasys.artemis.util.configuration;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
-
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import net.consensys.cava.bytes.Bytes32;
 import net.consensys.cava.config.Configuration;
+import net.consensys.cava.config.ConfigurationError;
 import net.consensys.cava.config.PropertyValidator;
 import net.consensys.cava.config.Schema;
 import net.consensys.cava.config.SchemaBuilder;
+import net.consensys.cava.crypto.SECP256K1;
 
-final class ArtemisConfiguration {
+/** Configuration of the Artemis instance. */
+public final class ArtemisConfiguration {
 
-  private final Configuration config;
+  private static final Schema schema = createSchema();
 
-  ArtemisConfiguration(Configuration config) {
-    this.config = config;
-  }
-
-  static final Schema createSchema() {
+  private static Schema createSchema() {
     SchemaBuilder builder =
         SchemaBuilder.create()
-            .addString("identity", null, "Identity of the peer", PropertyValidator.isPresent());
+            .addString(
+                "identity",
+                null,
+                "Identity of the peer. Secret key encoded as a hexadecimal string",
+                PropertyValidator.isPresent());
     builder.addString("networkInterface", "0.0.0.0", "Peer to peer network interface", null);
     builder.addInteger("port", 9000, "Peer to peer port", PropertyValidator.inRange(0, 65535));
     builder.addInteger(
@@ -53,13 +61,40 @@ final class ArtemisConfiguration {
         1,
         "represents the total number of nodes on the network",
         PropertyValidator.inRange(1, 16384));
-    builder.addListOfMap("peers", Collections.emptyList(), "Static peers", null);
+    builder.addListOfString(
+        "peers",
+        Collections.emptyList(),
+        "Static peers",
+        (key, position, peers) ->
+            peers.stream()
+                .map(
+                    peer -> {
+                      try {
+                        URI uri = new URI(peer);
+                        String userInfo = uri.getUserInfo();
+                        if (userInfo == null || userInfo.isEmpty()) {
+                          return new ConfigurationError("Missing public key");
+                        }
+                      } catch (URISyntaxException e) {
+                        return new ConfigurationError("Invalid uri " + peer);
+                      }
+                      return null;
+                    })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList()));
+    builder.addLong(
+        "networkID", 1L, "The identifier of the network (mainnet, testnet, sidechain)", null);
     return builder.toSchema();
   }
 
-  private static final Schema schema = createSchema();
-
-  static ArtemisConfiguration fromFile(String path) {
+  /**
+   * Reads configuration from file.
+   *
+   * @param path a toml file to read configuration from
+   * @return the new ArtemisConfiguration
+   * @throws UncheckedIOException if the file is missing
+   */
+  public static ArtemisConfiguration fromFile(String path) {
     Path configPath = Paths.get(path);
     try {
       return new ArtemisConfiguration(Configuration.fromToml(configPath, schema));
@@ -68,28 +103,80 @@ final class ArtemisConfiguration {
     }
   }
 
+  /**
+   * Reads configuration from a toml text.
+   *
+   * @param configText the toml text
+   * @return the new ArtemisConfiguration
+   */
+  public static ArtemisConfiguration fromString(String configText) {
+    return new ArtemisConfiguration(Configuration.fromToml(configText, schema));
+  }
+
+  private final Configuration config;
+
+  private ArtemisConfiguration(Configuration config) {
+    this.config = config;
+    if (config.hasErrors()) {
+      throw new IllegalArgumentException(
+          config.errors().stream()
+              .map(error -> error.position() + " " + error.toString())
+              .collect(Collectors.joining("\n")));
+    }
+  }
+
+  /** @return the identity of the node, the hexadecimal representation of its secret key */
   public String getIdentity() {
     return config.getString("identity");
   }
 
+  /** @return the port this node will listen to */
   public int getPort() {
     return config.getInteger("port");
   }
 
+  /** @return the port this node will advertise as its own */
   public int getAdvertisedPort() {
     return config.getInteger("advertisedPort");
   }
 
+  /** @return the network interface this node will bind to */
   public String getNetworkInterface() {
     return config.getString("networkInterface");
   }
 
+  /** @return the total number of validators in the network */
   public int getNumValidators() {
     return config.getInteger("numValidators");
   }
 
+  /** @return the total number of nodes on the network */
   public int getNumNodes() {
     return config.getInteger("numNodes");
   }
-}
 
+  /** @return the list of static peers associated with this node */
+  public List<URI> getStaticPeers() {
+    return config.getListOfString("peers").stream()
+        .map(
+            (peer) -> {
+              try {
+                return new URI(peer);
+              } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+              }
+            })
+        .collect(Collectors.toList());
+  }
+
+  /** @return the identity key pair of the node */
+  public SECP256K1.KeyPair getKeyPair() {
+    return SECP256K1.KeyPair.fromSecretKey(
+        SECP256K1.SecretKey.fromBytes(Bytes32.fromHexString(getIdentity())));
+  }
+
+  /** @return the identifier of the network (mainnet, testnet, sidechain) */
+  public long getNetworkID() {
+    return config.getLong("networkID");
+  }
+}

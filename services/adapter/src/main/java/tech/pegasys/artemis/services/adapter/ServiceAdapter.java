@@ -19,7 +19,6 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.MethodDescriptor;
 import java.util.HashSet;
 import java.util.Set;
-import net.consensys.cava.config.Configuration;
 import tech.pegasys.artemis.services.ServiceInterface;
 import tech.pegasys.artemis.services.adapter.dto.RemoteCallResponse;
 import tech.pegasys.artemis.services.adapter.event.OutboundEvent;
@@ -28,6 +27,7 @@ import tech.pegasys.artemis.services.adapter.io.inbound.DefaultGrpcServer;
 import tech.pegasys.artemis.services.adapter.io.inbound.GrpcServer;
 import tech.pegasys.artemis.services.adapter.io.outbound.EventForwarder;
 import tech.pegasys.artemis.services.adapter.io.outbound.GrpcEventForwarder;
+import tech.pegasys.artemis.util.configuration.ArtemisConfiguration;
 
 /** Encapsulates receiving/delivering events from/to Artemis microservices */
 public class ServiceAdapter implements ServiceInterface {
@@ -75,7 +75,7 @@ public class ServiceAdapter implements ServiceInterface {
   }
 
   @Override
-  public void init(EventBus eventBus, Configuration config) {}
+  public void init(EventBus eventBus, ArtemisConfiguration config) {}
 
   @Override
   public void run() {

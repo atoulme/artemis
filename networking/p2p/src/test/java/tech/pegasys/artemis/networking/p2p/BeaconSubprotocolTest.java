@@ -18,19 +18,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import net.consensys.cava.rlpx.wire.SubProtocolIdentifier;
 import org.junit.jupiter.api.Test;
+import tech.pegasys.artemis.storage.ChainStorageClient;
 
 final class BeaconSubprotocolTest {
 
   @Test
   void testId() {
-    BeaconSubprotocol subprotocol = new BeaconSubprotocol();
+    BeaconSubprotocol subprotocol = new BeaconSubprotocol(new ChainStorageClient(), 1, 1);
     assertEquals("bea", subprotocol.id().name());
     assertEquals(1, subprotocol.id().version());
   }
 
   @Test
   void supportsCheck() {
-    BeaconSubprotocol subprotocol = new BeaconSubprotocol();
+    BeaconSubprotocol subprotocol = new BeaconSubprotocol(new ChainStorageClient(), 1, 1);
     assertTrue(subprotocol.supports(SubProtocolIdentifier.of("bea", 1)));
   }
 }

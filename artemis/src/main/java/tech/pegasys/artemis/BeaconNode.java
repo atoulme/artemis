@@ -20,13 +20,8 @@ import io.vertx.core.Vertx;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import net.consensys.cava.bytes.Bytes32;
-import net.consensys.cava.config.Configuration;
-import net.consensys.cava.crypto.SECP256K1;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 import tech.pegasys.artemis.data.RawRecord;
 import tech.pegasys.artemis.data.TimeSeriesRecord;
@@ -35,7 +30,6 @@ import tech.pegasys.artemis.data.provider.CSVProvider;
 import tech.pegasys.artemis.data.provider.FileProvider;
 import tech.pegasys.artemis.data.provider.JSONProvider;
 import tech.pegasys.artemis.data.provider.ProviderTypes;
-import tech.pegasys.artemis.networking.p2p.RLPxP2PNetwork;
 import tech.pegasys.artemis.networking.p2p.api.P2PNetwork;
 import tech.pegasys.artemis.services.ServiceController;
 import tech.pegasys.artemis.services.beaconchain.BeaconChainService;
@@ -43,6 +37,7 @@ import tech.pegasys.artemis.services.chainstorage.ChainStorageService;
 import tech.pegasys.artemis.services.powchain.PowchainService;
 import tech.pegasys.artemis.util.alogger.ALogger;
 import tech.pegasys.artemis.util.cli.CommandLineArguments;
+import tech.pegasys.artemis.util.configuration.ArtemisConfiguration;
 import tech.pegasys.artemis.validator.coordinator.ValidatorCoordinator;
 
 public class BeaconNode {
@@ -50,16 +45,15 @@ public class BeaconNode {
   private final Vertx vertx = Vertx.vertx();
   private final ExecutorService threadPool =
       Executors.newCachedThreadPool(
-          new ThreadFactory() {
-            @Override
-            public Thread newThread(@NotNull Runnable r) {
-              Thread t = new Thread(r);
-              t.setDaemon(true);
-              return t;
-            }
+          r -> {
+            Thread t = new Thread(r);
+            t.setDaemon(true);
+            return t;
           });
 
-  private final Configuration config;
+  private final ServiceController controller = new ServiceController();
+
+  private final ArtemisConfiguration config;
   private P2PNetwork p2pNetwork;
   private ValidatorCoordinator validatorCoordinator;
   private EventBus eventBus;
@@ -69,23 +63,13 @@ public class BeaconNode {
   private CommandLineArguments cliArgs;
   private CommandLine commandLine;
 
-  public BeaconNode(CommandLine commandLine, CommandLineArguments cliArgs) {
-    this.config = ArtemisConfiguration.fromFile(cliArgs.getConfigFile());
+  public BeaconNode(
+      CommandLine commandLine, CommandLineArguments cliArgs, ArtemisConfiguration config) {
+    this.config = config;
     this.eventBus = new AsyncEventBus(threadPool);
-    SECP256K1.KeyPair keyPair =
-        SECP256K1.KeyPair.fromSecretKey(
-            SECP256K1.SecretKey.fromBytes(Bytes32.fromHexString(config.getString("identity"))));
-    // this.p2pNetwork = new MockP2PNetwork(eventBus);
-    new RLPxP2PNetwork(
-        eventBus,
-        vertx,
-        keyPair,
-        config.getInteger("port"),
-        config.getInteger("advertisedPort"),
-        config.getString("networkInterface"));
     this.validatorCoordinator =
         new ValidatorCoordinator(
-            eventBus, keyPair, config.getInteger("numValidators"), config.getInteger("numNodes"));
+            eventBus, config.getKeyPair(), config.getNumValidators(), config.getNumNodes());
     this.cliArgs = cliArgs;
     this.commandLine = commandLine;
     if (cliArgs.isOutputEnabled()) {
@@ -111,22 +95,23 @@ public class BeaconNode {
     // Check output file
 
     // Initialize services
-    ServiceController.initAll(
+    controller.initAll(
         eventBus,
         cliArgs,
         config,
+        vertx,
         BeaconChainService.class,
         PowchainService.class,
         ChainStorageService.class);
     // Start services
-    ServiceController.startAll(cliArgs);
+    controller.startAll(cliArgs);
     // Start p2p adapter
     this.p2pNetwork.run();
   }
 
   public void stop() {
     try {
-      ServiceController.stopAll(cliArgs);
+      controller.stopAll(cliArgs);
       this.p2pNetwork.close();
     } catch (IOException e) {
       LOG.log(Level.WARN, e.toString());

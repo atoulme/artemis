@@ -14,51 +14,64 @@
 package tech.pegasys.artemis.services;
 
 import com.google.common.eventbus.EventBus;
+import io.vertx.core.Vertx;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import net.consensys.cava.config.Configuration;
+import tech.pegasys.artemis.networking.p2p.RLPxP2PNetwork;
 import tech.pegasys.artemis.util.cli.CommandLineArguments;
+import tech.pegasys.artemis.util.configuration.ArtemisConfiguration;
 
 public class ServiceController {
 
-  private static ServiceInterface beaconChainService;
-  private static ServiceInterface powchainService;
-  private static ServiceInterface chainStorageService;
+  private ServiceInterface beaconChainService;
+  private ServiceInterface powchainService;
+  private ServiceInterface chainStorageService;
 
-  private static final ExecutorService beaconChainExecuterService =
-      Executors.newSingleThreadExecutor();
-  private static final ExecutorService powchainExecuterService =
-      Executors.newSingleThreadExecutor();
-  private static final ExecutorService chainStorageExecutorService =
-      Executors.newSingleThreadExecutor();
+  private final ExecutorService beaconChainExecuterService = Executors.newSingleThreadExecutor();
+  private final ExecutorService powchainExecuterService = Executors.newSingleThreadExecutor();
+  private final ExecutorService chainStorageExecutorService = Executors.newSingleThreadExecutor();
+  private RLPxP2PNetwork network;
 
   // initialize/register all services
-  public static <U extends ServiceInterface, V extends ServiceInterface, W extends ServiceInterface>
+  public <U extends ServiceInterface, V extends ServiceInterface, W extends ServiceInterface>
       void initAll(
           EventBus eventBus,
           CommandLineArguments cliArgs,
-          Configuration config,
+          ArtemisConfiguration config,
+          Vertx vertx,
           Class<U> beaconChainServiceType,
           Class<V> powchainServiceType,
           Class<W> chainStorageServiceType) {
-    beaconChainService = ServiceFactory.getInstance(beaconChainServiceType).getInstance();
-    powchainService = ServiceFactory.getInstance(powchainServiceType).getInstance();
-    chainStorageService = ServiceFactory.getInstance(chainStorageServiceType).getInstance();
-
+    try {
+      beaconChainService = beaconChainServiceType.getDeclaredConstructor().newInstance();
+      powchainService = powchainServiceType.getDeclaredConstructor().newInstance();
+      chainStorageService = chainStorageServiceType.getDeclaredConstructor().newInstance();
+      network =
+          new RLPxP2PNetwork(
+              eventBus,
+              vertx,
+              config.getKeyPair(),
+              config.getPort(),
+              config.getAdvertisedPort(),
+              config.getNetworkInterface(),
+              config.getNetworkID(),
+              config.getStaticPeers());
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
     beaconChainService.init(eventBus, config);
     powchainService.init(eventBus);
     chainStorageService.init(eventBus);
   }
 
-  public static void startAll(CommandLineArguments cliArgs) {
-
+  public void startAll(CommandLineArguments cliArgs) {
     // start all services
     beaconChainExecuterService.execute(beaconChainService);
     powchainExecuterService.execute(powchainService);
     chainStorageExecutorService.execute(chainStorageService);
   }
 
-  public static void stopAll(CommandLineArguments cliArgs) {
+  public void stopAll(CommandLineArguments cliArgs) {
     // stop all services
     beaconChainExecuterService.shutdown();
     beaconChainService.stop();
