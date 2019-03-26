@@ -163,7 +163,7 @@ public final class RPCCodec {
     try {
       Bytes body = Bytes.wrap(Snappy.compress(mapper.writer().writeValueAsBytes(node)));
       return Bytes.concatenate(
-          Bytes.wrap(new byte[] {(byte) 1, (byte) 2}), Bytes.ofUnsignedLong(body.size()), body);
+          Bytes.wrap(new byte[] {(byte) 1, (byte) 2}), Bytes.ofUnsignedInt(body.size()), body);
     } catch (IOException e) {
       throw new IllegalArgumentException(e);
     }
@@ -180,7 +180,7 @@ public final class RPCCodec {
     if (message.get(1) != (byte) 2) {
       return null;
     }
-    long bodySize = message.getLong(2);
+    long bodySize = message.getInt(2);
     if (message.size() < bodySize + 10) {
       return null;
     }
